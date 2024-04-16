@@ -8,7 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.stream.Stream;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
@@ -17,7 +17,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Stream.of(Role.getRoleNameById(user.getRoleId())).map(SimpleGrantedAuthority::new).toList();
+        return List.of(new SimpleGrantedAuthority(Role.getRoleNameById(user.getRoleId())));
     }
 
     @Override

@@ -18,7 +18,7 @@ public class JwtService {
     @Value("${token.signing.key}")
     private String key;
 
-    private String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails) {
         return Jwts
                 .builder()
                 .subject(userDetails.getUsername())
@@ -42,7 +42,7 @@ public class JwtService {
         return claims.apply(allClaims);
     }
 
-    private String extractEmail(String token) {
+    public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -50,9 +50,9 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         return userDetails.getUsername().equals(extractEmail(token)) &&
-                extractExpiration(token).before(new Date());
+                (new Date().before(extractExpiration(token)));
     }
 
     private SecretKey getSigningKey() {

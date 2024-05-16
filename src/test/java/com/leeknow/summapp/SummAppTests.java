@@ -1,10 +1,10 @@
-package com.leeknow.application;
+package com.leeknow.summapp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ApplicationTests {
+class SummAppTests {
 
 	@Test
 	void contextLoads() {

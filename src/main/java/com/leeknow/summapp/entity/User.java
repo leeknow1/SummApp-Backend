@@ -1,4 +1,4 @@
-package com.leeknow.application.entity;
+package com.leeknow.summapp.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

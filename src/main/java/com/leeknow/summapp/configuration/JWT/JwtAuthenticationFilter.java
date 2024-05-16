@@ -1,6 +1,6 @@
-package com.leeknow.application.configuration.JWT;
+package com.leeknow.summapp.configuration.JWT;
 
-import com.leeknow.application.configuration.CustomUserDetailsService;
+import com.leeknow.summapp.configuration.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

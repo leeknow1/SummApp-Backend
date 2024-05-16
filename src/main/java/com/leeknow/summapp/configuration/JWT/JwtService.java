@@ -1,4 +1,4 @@
-package com.leeknow.application.configuration.JWT;
+package com.leeknow.summapp.configuration.JWT;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

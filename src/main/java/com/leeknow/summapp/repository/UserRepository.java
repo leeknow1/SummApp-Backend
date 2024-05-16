@@ -1,6 +1,6 @@
-package com.leeknow.application.repository;
+package com.leeknow.summapp.repository;
 
-import com.leeknow.application.entity.User;
+import com.leeknow.summapp.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

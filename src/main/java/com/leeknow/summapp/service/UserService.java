@@ -1,7 +1,7 @@
-package com.leeknow.application.service;
+package com.leeknow.summapp.service;
 
-import com.leeknow.application.entity.User;
-import com.leeknow.application.repository.UserRepository;
+import com.leeknow.summapp.entity.User;
+import com.leeknow.summapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

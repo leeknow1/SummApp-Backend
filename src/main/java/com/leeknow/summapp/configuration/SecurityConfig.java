@@ -1,7 +1,7 @@
-package com.leeknow.application.configuration;
+package com.leeknow.summapp.configuration;
 
-import com.leeknow.application.configuration.JWT.JwtAuthenticationFilter;
-import com.leeknow.application.repository.UserRepository;
+import com.leeknow.summapp.configuration.JWT.JwtAuthenticationFilter;
+import com.leeknow.summapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

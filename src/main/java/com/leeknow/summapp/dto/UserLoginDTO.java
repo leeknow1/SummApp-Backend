@@ -1,4 +1,4 @@
-package com.leeknow.application.dto;
+package com.leeknow.summapp.dto;
 
 import lombok.Data;
 

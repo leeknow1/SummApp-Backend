@@ -1,4 +1,4 @@
-package com.leeknow.application;
+package com.leeknow.summapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

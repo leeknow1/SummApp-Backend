@@ -1,7 +1,7 @@
-package com.leeknow.application.configuration;
+package com.leeknow.summapp.configuration;
 
-import com.leeknow.application.entity.User;
-import com.leeknow.application.repository.UserRepository;
+import com.leeknow.summapp.entity.User;
+import com.leeknow.summapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

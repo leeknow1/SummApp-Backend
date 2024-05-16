@@ -1,11 +1,11 @@
-package com.leeknow.application.service;
+package com.leeknow.summapp.service;
 
-import com.leeknow.application.configuration.CustomUserDetails;
-import com.leeknow.application.configuration.JWT.JwtService;
-import com.leeknow.application.dto.UserLoginDTO;
-import com.leeknow.application.dto.UserRegistrationDTO;
-import com.leeknow.application.entity.User;
-import com.leeknow.application.enums.Role;
+import com.leeknow.summapp.configuration.CustomUserDetails;
+import com.leeknow.summapp.configuration.JWT.JwtService;
+import com.leeknow.summapp.dto.UserLoginDTO;
+import com.leeknow.summapp.dto.UserRegistrationDTO;
+import com.leeknow.summapp.entity.User;
+import com.leeknow.summapp.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

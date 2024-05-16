@@ -1,7 +1,7 @@
-package com.leeknow.application.configuration;
+package com.leeknow.summapp.configuration;
 
-import com.leeknow.application.entity.User;
-import com.leeknow.application.enums.Role;
+import com.leeknow.summapp.entity.User;
+import com.leeknow.summapp.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

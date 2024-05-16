@@ -1,10 +1,9 @@
-package com.leeknow.application.controller;
+package com.leeknow.summapp.controller;
 
-import com.leeknow.application.dto.UserLoginDTO;
-import com.leeknow.application.dto.UserRegistrationDTO;
-import com.leeknow.application.service.AuthenticationService;
+import com.leeknow.summapp.dto.UserLoginDTO;
+import com.leeknow.summapp.dto.UserRegistrationDTO;
+import com.leeknow.summapp.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class MainController {

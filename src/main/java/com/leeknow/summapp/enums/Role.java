@@ -1,4 +1,4 @@
-package com.leeknow.application.enums;
+package com.leeknow.summapp.enums;
 
 import lombok.Getter;
 

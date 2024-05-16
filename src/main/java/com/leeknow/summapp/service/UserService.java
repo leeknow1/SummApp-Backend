@@ -1,12 +1,15 @@
 package com.leeknow.summapp.service;
 
+import com.leeknow.summapp.dto.DataSearchDTO;
 import com.leeknow.summapp.entity.User;
 import com.leeknow.summapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -15,23 +18,25 @@ public class UserService implements CommonService<User> {
     private final UserRepository userRepository;
 
     @Override
-    public Page<User> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public Map<String, Page<User>> findAll(DataSearchDTO searchDTO) {
+        return null;
     }
 
     @Override
-    public User findById(Integer id) {
-        return userRepository.findById(id).orElse(null);
+    public Map<String, User> findById(Integer id) {
+        return null;
     }
 
     @Override
-    public User save(User user) {
-        return userRepository.save(user);
+    public Map<String, User> save(User user) {
+        Map<String, User> result = new HashMap<>();
+        result.put("user", userRepository.save(user));
+        return result;
     }
 
     @Override
-    public User update(User user) {
-        return userRepository.save(user);
+    public Map<String, User> update(User user) {
+        return null;
     }
 
     @Override

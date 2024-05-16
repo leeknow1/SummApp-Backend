@@ -1,17 +1,19 @@
 package com.leeknow.summapp.service;
 
+import com.leeknow.summapp.dto.DataSearchDTO;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
+import java.util.Map;
 
 public interface CommonService<T> {
 
-    Page<T> findAll(Pageable pageable);
+    Map<String, Page<T>> findAll(DataSearchDTO searchDTO);
 
-    T findById(Integer id);
+    Map<String, T> findById(Integer id);
 
-    T save(T object);
+    Map<String, T> save(T object);
 
-    T update(T object);
+    Map<String, T> update(T object);
 
     void delete(Integer id);
 }

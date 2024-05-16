@@ -23,6 +23,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+
     public Map<String, Object> signIn(UserLoginDTO dto) {
         Map<String, Object> response = new HashMap<>();
 
@@ -45,7 +46,7 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setRoleId(Role.USER.getRoleId());
 
-        user = userService.save(user);
+        user = userService.save(user).get("user");
         String token = jwtService.generateToken(new CustomUserDetails(user));
 
         response.put("token", token);

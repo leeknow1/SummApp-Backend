@@ -13,33 +13,28 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements CommonService<User> {
+public class UserService {
 
     private final UserRepository userRepository;
 
-    @Override
     public Map<String, Page<User>> findAll(DataSearchDTO searchDTO) {
         return null;
     }
 
-    @Override
     public Map<String, User> findById(Integer id) {
         return null;
     }
 
-    @Override
     public Map<String, User> save(User user) {
         Map<String, User> result = new HashMap<>();
         result.put("user", userRepository.save(user));
         return result;
     }
 
-    @Override
     public Map<String, User> update(User user) {
         return null;
     }
 
-    @Override
     public void delete(Integer id) {
         userRepository.deleteById(id);
     }

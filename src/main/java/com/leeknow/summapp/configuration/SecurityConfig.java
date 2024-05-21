@@ -1,6 +1,7 @@
 package com.leeknow.summapp.configuration;
 
 import com.leeknow.summapp.configuration.JWT.JwtAuthenticationFilter;
+import com.leeknow.summapp.enums.Role;
 import com.leeknow.summapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -64,6 +65,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/sign-in", "/sign-up").permitAll()
                         .requestMatchers("/home").authenticated()
+                        .requestMatchers("/application/all").hasAnyAuthority(Role.EMPLOYEE.getRoleName(), Role.ADMIN.getRoleName())
+                        .requestMatchers("/application/**").authenticated()
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

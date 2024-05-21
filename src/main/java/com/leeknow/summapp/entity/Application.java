@@ -19,10 +19,11 @@ public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer applicationId;
-    private Integer number;
+    private String number;
     private Timestamp creationDate;
     private Timestamp finishDate;
     private Integer statusId;
+    private Integer typeId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

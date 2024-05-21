@@ -18,12 +18,12 @@ public class MainController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/sign-in")
-    public Map<String, Object> login(@RequestBody UserLoginDTO user) {
+    public Map<String, Object> signIn(@RequestBody UserLoginDTO user) {
         return authenticationService.signIn(user);
     }
 
     @PostMapping("/sign-up")
-    public Map<String, Object> login(@RequestBody UserRegistrationDTO user) {
+    public Map<String, Object> signUp(@RequestBody UserRegistrationDTO user) {
         return authenticationService.signUp(user);
     }
 

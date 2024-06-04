@@ -1,6 +1,8 @@
 package com.leeknow.summapp.configuration.JWT;
 
-import com.leeknow.summapp.configuration.CustomUserDetailsService;
+import com.leeknow.summapp.configuration.CustomUserDetails;
+import com.leeknow.summapp.entity.User;
+import com.leeknow.summapp.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,16 +22,22 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final String AUTHORIZATION_HEADER = "Authorization";
-    private final String BEARER_PREFIX = "Bearer ";
     private final JwtService jwtService;
-    private final CustomUserDetailsService userDetailsService;
+    private final UserRepository userRepository;
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        String header = request.getHeader(AUTHORIZATION_HEADER);
+        String BEARER_PREFIX = "Bearer ";
+        String header = request.getHeader("Authorization");
+
         if (header == null || !header.startsWith(BEARER_PREFIX)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if(request.getRequestURI().startsWith("/api/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -38,7 +46,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String email = jwtService.extractEmail(token);
 
         if (email != null && !email.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            User user = userRepository.findByEmail(email);
+            if (user == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+            UserDetails userDetails = new CustomUserDetails(user);
 
             if (jwtService.isTokenValid(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

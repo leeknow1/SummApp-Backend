@@ -3,10 +3,11 @@ package com.leeknow.summapp.controller;
 import com.leeknow.summapp.dto.ApplicationRequestDTO;
 import com.leeknow.summapp.dto.ApplicationResponseDTO;
 import com.leeknow.summapp.dto.DataSearchDTO;
-import com.leeknow.summapp.entity.Application;
 import com.leeknow.summapp.service.ApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -19,22 +20,26 @@ public class ApplicationController {
     private final ApplicationService applicationService;
 
     @PostMapping("/all")
-    public Map<String, Page<ApplicationResponseDTO>> getALlApplication(@RequestBody DataSearchDTO searchDTO) {
-        return applicationService.findAll(searchDTO);
+    public ResponseEntity<?> getALlApplication(@RequestBody DataSearchDTO searchDTO) {
+        Map<String, Page<ApplicationResponseDTO>> result = applicationService.findAll(searchDTO);
+        return ResponseEntity.ok().body(result);
     }
 
     @PostMapping("/user")
-    public Map<String, Page<ApplicationResponseDTO>> getAllApplicationByCurrentUser(@RequestBody DataSearchDTO searchDTO) {
-        return applicationService.findAllByCurrentUser(searchDTO);
+    public ResponseEntity<?> getAllApplicationByCurrentUser(@RequestBody DataSearchDTO searchDTO) {
+        Map<String, Page<ApplicationResponseDTO>> result = applicationService.findAllByCurrentUser(searchDTO);
+        return ResponseEntity.ok().body(result);
     }
 
     @GetMapping("/{id}")
-    public Map<String, ApplicationResponseDTO> getApplicationById(@PathVariable("id") Integer id) {
-        return applicationService.findById(id);
+    public ResponseEntity<?> getApplicationById(@PathVariable("id") Integer id) {
+        Map<String, ApplicationResponseDTO> result = applicationService.findById(id);
+        return ResponseEntity.ok().body(result);
     }
 
     @PostMapping
-    public Map<String, ApplicationResponseDTO> createApplication(@RequestBody ApplicationRequestDTO applicationRequestDTO) {
-        return applicationService.save(applicationRequestDTO);
+    public ResponseEntity<?> createApplication(@RequestBody ApplicationRequestDTO applicationRequestDTO) {
+        Map<String, ApplicationResponseDTO> result = applicationService.save(applicationRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 }

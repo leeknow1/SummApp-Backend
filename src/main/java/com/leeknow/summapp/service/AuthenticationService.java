@@ -31,6 +31,7 @@ public class AuthenticationService {
 
         User user = userService.findByEmail(dto.getEmail());
         String token = jwtService.generateToken(new CustomUserDetails(user));
+        jwtService.generateRefreshToken(user);
 
         response.put("token", token);
 
@@ -48,6 +49,7 @@ public class AuthenticationService {
 
         user = userService.save(user).get("user");
         String token = jwtService.generateToken(new CustomUserDetails(user));
+        jwtService.generateRefreshToken(user);
 
         response.put("token", token);
 

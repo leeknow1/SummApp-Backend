@@ -2,6 +2,7 @@ package com.leeknow.summapp.service;
 
 import com.leeknow.summapp.configuration.CustomUserDetails;
 import com.leeknow.summapp.configuration.JWT.JwtService;
+import com.leeknow.summapp.configuration.expections.UserAlreadyExistException;
 import com.leeknow.summapp.dto.UserLoginDTO;
 import com.leeknow.summapp.dto.UserRegistrationDTO;
 import com.leeknow.summapp.entity.User;
@@ -40,6 +41,9 @@ public class AuthenticationService {
 
     public Map<String, Object> signUp(UserRegistrationDTO dto) {
         Map<String, Object> response = new HashMap<>();
+
+        if (userService.findByEmail(dto.getEmail()) != null)
+            throw new UserAlreadyExistException("Пользователь с такой почтой уже существует!");
 
         User user = new User();
         user.setUsername(dto.getUsername());

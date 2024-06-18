@@ -4,6 +4,7 @@ import com.leeknow.summapp.dto.ApplicationRequestDTO;
 import com.leeknow.summapp.dto.ApplicationResponseDTO;
 import com.leeknow.summapp.dto.DataSearchDTO;
 import com.leeknow.summapp.service.ApplicationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -33,12 +34,12 @@ public class ApplicationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getApplicationById(@PathVariable("id") Integer id) {
-        Map<String, ApplicationResponseDTO> result = applicationService.findById(id);
-        return ResponseEntity.ok().body(result);
+        Map<String, Object> result = applicationService.findById(id);
+        return ResponseEntity.status((int) result.get("status")).body(result);
     }
 
     @PostMapping
-    public ResponseEntity<?> createApplication(@RequestBody ApplicationRequestDTO applicationRequestDTO) {
+    public ResponseEntity<?> createApplication(@RequestBody @Valid ApplicationRequestDTO applicationRequestDTO) {
         Map<String, ApplicationResponseDTO> result = applicationService.save(applicationRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }

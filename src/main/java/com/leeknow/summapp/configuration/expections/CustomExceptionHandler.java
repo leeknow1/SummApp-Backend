@@ -1,5 +1,8 @@
 package com.leeknow.summapp.configuration.expections;
 
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.mapping.PropertyReferenceException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,6 +32,20 @@ public class CustomExceptionHandler {
     public Map<String, String> handleBadCredentialsException() {
         Map<String, String> map = new HashMap<>();
         map.put("message", "Почта или пароль введены неверно.");
+        return map;
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public Map<String, String> handleIllegalArgumentException() {
+        Map<String, String> map = new HashMap<>();
+        map.put("message", "Неверно введены или отсутствует данные.");
+        return map;
+    }
+
+    @ExceptionHandler({HttpMessageNotReadableException.class, PropertyReferenceException.class, InvalidDataAccessApiUsageException.class})
+    public Map<String, String> handleHttpMessageNotReadableException() {
+        Map<String, String> map = new HashMap<>();
+        map.put("message", "Запрос не может быть обработан.");
         return map;
     }
 }

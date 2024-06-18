@@ -46,6 +46,9 @@ public class AuthenticationService {
             throw new UserAlreadyExistException("Пользователь с такой почтой уже существует!");
 
         User user = new User();
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setMiddleName(dto.getMiddleName() == null ? "" : dto.getMiddleName());
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));

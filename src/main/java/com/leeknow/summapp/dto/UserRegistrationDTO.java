@@ -8,6 +8,14 @@ import lombok.Data;
 @Data
 public class UserRegistrationDTO {
 
+    @NotBlank(message = "Введите имя.")
+    private String firstName;
+
+    @NotBlank(message = "Введите фамилию.")
+    private String lastName;
+
+    private String middleName;
+
     @NotBlank(message = "Введите имя пользователя.")
     private String username;
 

@@ -10,5 +10,5 @@ public class ApplicationResponseDTO {
     private String finishDate;
     private Integer statusId;
     private Integer typeId;
-    private Integer userId;
+    private UserResponseDTO userResponseDTO;
 }

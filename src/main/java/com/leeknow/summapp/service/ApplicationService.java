@@ -3,6 +3,7 @@ package com.leeknow.summapp.service;
 import com.leeknow.summapp.dto.ApplicationRequestDTO;
 import com.leeknow.summapp.dto.ApplicationResponseDTO;
 import com.leeknow.summapp.dto.DataSearchDTO;
+import com.leeknow.summapp.dto.UserResponseDTO;
 import com.leeknow.summapp.entity.Application;
 import com.leeknow.summapp.entity.User;
 import com.leeknow.summapp.enums.Status;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -47,9 +49,10 @@ public class ApplicationService {
         return result;
     }
 
-    public Map<String, ApplicationResponseDTO> findById(Integer id) {
-        Map<String, ApplicationResponseDTO> result = new HashMap<>();
+    public Map<String, Object> findById(Integer id) {
+        Map<String, Object> result = new HashMap<>();
         result.put("application", toResponseDtoApplication(applicationRepository.findById(id).orElse(null)));
+        result.put("status", result.get("application") == null ? HttpStatus.NOT_FOUND.value() : HttpStatus.OK.value());
         return result;
     }
 
@@ -100,8 +103,19 @@ public class ApplicationService {
             responseDTO.setFinishDate(formatDate(application.getFinishDate()));
             responseDTO.setStatusId(application.getStatusId());
             responseDTO.setTypeId(application.getTypeId());
-            responseDTO.setUserId(application.getUser().getUserId());
+            responseDTO.setUserResponseDTO(toResponseDtoUser(application.getUser()));
             return responseDTO;
+        }
+        return null;
+    }
+
+    private UserResponseDTO toResponseDtoUser(User user) {
+        if (user != null) {
+            UserResponseDTO userDto = new UserResponseDTO();
+            userDto.setFirstName(user.getFirstName());
+            userDto.setMiddleName(user.getMiddleName());
+            userDto.setLastName(user.getLastName());
+            return userDto;
         }
         return null;
     }

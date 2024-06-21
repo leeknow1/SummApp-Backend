@@ -6,7 +6,8 @@ import com.leeknow.summapp.dto.DataSearchDTO;
 import com.leeknow.summapp.dto.UserResponseDTO;
 import com.leeknow.summapp.entity.Application;
 import com.leeknow.summapp.entity.User;
-import com.leeknow.summapp.enums.Status;
+import com.leeknow.summapp.enums.ApplicationStatus;
+import com.leeknow.summapp.enums.EventType;
 import com.leeknow.summapp.repository.ApplicationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ public class ApplicationService {
 
     private final ApplicationRepository applicationRepository;
     private final UserService userService;
+    private final EventService eventService;
 
     public Map<String, Page<ApplicationResponseDTO>> findAll(DataSearchDTO searchDTO) {
         Map<String, Page<ApplicationResponseDTO>> result = new HashMap<>();
@@ -61,11 +63,12 @@ public class ApplicationService {
         Application application = new Application();
         application.setUser(userService.getCurrentUser());
         application.setNumber(getRandomApplicationNumber());
-        application.setStatusId(Status.CREATED.getId());
+        application.setStatusId(ApplicationStatus.CREATED.getId());
         application.setTypeId(applicationRequestDTO.getTypeId());
         application.setCreationDate(new Timestamp(System.currentTimeMillis()));
         application = applicationRepository.save(application);
         result.put("application", toResponseDtoApplication(application));
+        eventService.create(EventType.APPLICATION_CREATED.getId(), application);
         return result;
     }
 
@@ -118,5 +121,15 @@ public class ApplicationService {
             return userDto;
         }
         return null;
+    }
+
+    public Map<String, String> setStatus(Integer id, Integer status) {
+        Map<String, String> result = new HashMap<>();
+        Application application = applicationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        application.setStatusId(status);
+        applicationRepository.save(application);
+        result.put("message", "Заявка успешно обновлена!");
+        eventService.create(EventType.APPLICATION_STATUS_CHANGED.getId(), application);
+        return result;
     }
 }

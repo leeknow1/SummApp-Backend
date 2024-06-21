@@ -6,6 +6,7 @@ import com.leeknow.summapp.configuration.expections.UserAlreadyExistException;
 import com.leeknow.summapp.dto.UserLoginDTO;
 import com.leeknow.summapp.dto.UserRegistrationDTO;
 import com.leeknow.summapp.entity.User;
+import com.leeknow.summapp.enums.EventType;
 import com.leeknow.summapp.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +25,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final EventService eventService;
 
     public Map<String, Object> signIn(UserLoginDTO dto) {
         Map<String, Object> response = new HashMap<>();
@@ -35,7 +37,7 @@ public class AuthenticationService {
         jwtService.generateRefreshToken(user);
 
         response.put("token", token);
-
+        eventService.create(EventType.SIGNING_IN.getId(), user);
         return response;
     }
 
@@ -59,7 +61,7 @@ public class AuthenticationService {
         jwtService.generateRefreshToken(user);
 
         response.put("token", token);
-
+        eventService.create(EventType.NEW_USER.getId(), user);
         return response;
     }
 }

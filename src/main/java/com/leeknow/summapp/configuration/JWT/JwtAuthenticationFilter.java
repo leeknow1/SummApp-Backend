@@ -37,12 +37,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        if(request.getRequestURI().startsWith("/api/auth")) {
+        if (request.getRequestURI().startsWith("/api/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token  = header.substring(BEARER_PREFIX.length());
+        String token = header.substring(BEARER_PREFIX.length());
         String email = jwtService.extractEmail(token);
 
         if (email != null && !email.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null) {

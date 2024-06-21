@@ -43,4 +43,10 @@ public class ApplicationController {
         Map<String, ApplicationResponseDTO> result = applicationService.save(applicationRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
+
+    @PostMapping("/{id}/status")
+    public ResponseEntity<?> setApplicationStatus(@PathVariable("id") Integer id, @RequestBody Integer status) {
+        Map<String, String> result = applicationService.setStatus(id, status);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
 }

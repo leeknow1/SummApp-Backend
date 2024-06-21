@@ -22,9 +22,9 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class JwtService {
 
+    private final RefreshTokenRepository refreshTokenRepository;
     @Value("${token.signing.key}")
     private String key;
-    private final RefreshTokenRepository refreshTokenRepository;
 
     public String generateToken(UserDetails userDetails) {
         return Jwts
@@ -38,12 +38,12 @@ public class JwtService {
 
     public void generateRefreshToken(User user) {
         String token = Jwts
-                            .builder()
-                            .subject(user.getEmail())
-                            .issuedAt(new Date(System.currentTimeMillis()))
-                            .expiration(new Date(System.currentTimeMillis() + (30L * 24 * 60 * 60 * 1000))) // 30 дней
-                            .signWith(getSigningKey())
-                            .compact();
+                .builder()
+                .subject(user.getEmail())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + (30L * 24 * 60 * 60 * 1000))) // 30 дней
+                .signWith(getSigningKey())
+                .compact();
         createRefreshToken(token, user);
     }
 

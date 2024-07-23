@@ -64,7 +64,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/sign-in", "/auth/sign-up").permitAll()
-                        .requestMatchers("/home", "/file/*").authenticated()
+                        .requestMatchers("/home", "/file/**", "/openai/**").authenticated()
                         .requestMatchers("/application/all").hasAnyAuthority(Role.EMPLOYEE.getRoleName(), Role.ADMIN.getRoleName())
                         .requestMatchers("/application/{id}/status").hasAnyAuthority(Role.EMPLOYEE.getRoleName(), Role.ADMIN.getRoleName())
                         .requestMatchers("/application/**").authenticated()

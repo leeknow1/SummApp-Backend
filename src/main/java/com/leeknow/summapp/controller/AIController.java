@@ -1,38 +1,34 @@
 package com.leeknow.summapp.controller;
 
 import com.leeknow.summapp.dto.SimpleDTO;
+import com.leeknow.summapp.service.AIService.AiService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/openai")
+@RequestMapping("/ai")
 @RequiredArgsConstructor
 public class AIController {
 
-    private final ChatClient chatClient;
+    private final AiService aiService;
 
-    @PostMapping("/send")
-    public ResponseEntity<?> sendMessage(@RequestBody @Valid SimpleDTO message) {
-        Map<String, Object> result = new HashMap<>();
+    @PostMapping("/send/openai")
+    public ResponseEntity<?> sendOpenAI(@RequestBody @Valid SimpleDTO message) {
+        Map<String, Object> result = aiService.sendOpenAI(message);
+        return ResponseEntity.ok().body(result);
+    }
 
-        String content;
-        try {
-            content = chatClient.prompt().user(message.getMessage()).call().content();
-        } catch (Exception e) {
-            result.put("message", "Произошла ошибка!");
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(result);
-        }
-        result.put("message", content);
+    @PostMapping("/send/gemini")
+    public ResponseEntity<?> generateContent(@RequestBody @Valid SimpleDTO message) throws IOException, InterruptedException {
+        Map<String, Object> result = aiService.sendGeminiAI(message);
         return ResponseEntity.ok().body(result);
     }
 }

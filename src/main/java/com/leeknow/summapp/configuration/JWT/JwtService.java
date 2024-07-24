@@ -23,6 +23,7 @@ import java.util.function.Function;
 public class JwtService {
 
     private final RefreshTokenRepository refreshTokenRepository;
+
     @Value("${token.signing.key}")
     private String key;
 

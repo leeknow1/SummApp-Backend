@@ -25,7 +25,7 @@ public class FileController {
     private final FileService fileService;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam("file")MultipartFile file) throws IOException {
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
         Map<String, Object> result = fileService.uploadFile(file);
         return ResponseEntity.ok().body(result);
     }

@@ -26,15 +26,12 @@ public class AiService {
     @Value("${spring.ai.gemini.api-key}")
     private String geminiKey;
 
+    //TODO: not working!
     public Map<String, Object> sendOpenAI(SimpleDTO message) {
         Map<String, Object> result = new HashMap<>();
         String content;
-        try {
-            content = chatClient.prompt().user(message.getMessage()).call().content();
-            result.put("message", content);
-        } catch (Exception e) {
-            result.put("message", "Произошла ошибка!");
-        }
+        content = chatClient.prompt().user(message.getMessage()).call().content();
+        result.put("message", content);
         return result;
     }
 

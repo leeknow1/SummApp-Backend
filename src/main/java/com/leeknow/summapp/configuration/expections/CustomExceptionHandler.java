@@ -2,6 +2,8 @@ package com.leeknow.summapp.configuration.expections;
 
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.mapping.PropertyReferenceException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,37 +17,44 @@ import java.util.Map;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         Map<String, String> map = new HashMap<>();
         exception.getBindingResult().getFieldErrors().stream().findFirst().ifPresent(fieldError -> map.put("message", fieldError.getDefaultMessage()));
-        return map;
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
     }
 
     @ExceptionHandler(UserAlreadyExistException.class)
-    public Map<String, String> handleUserAlreadyExistException(UserAlreadyExistException exception) {
+    public ResponseEntity<?> handleUserAlreadyExistException(UserAlreadyExistException exception) {
         Map<String, String> map = new HashMap<>();
         map.put("message", exception.getMessage());
-        return map;
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public Map<String, String> handleBadCredentialsException() {
+    public ResponseEntity<?> handleBadCredentialsException() {
         Map<String, String> map = new HashMap<>();
         map.put("message", "Почта или пароль введены неверно.");
-        return map;
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public Map<String, String> handleIllegalArgumentException() {
+    public ResponseEntity<?> handleIllegalArgumentException() {
         Map<String, String> map = new HashMap<>();
         map.put("message", "Неверно введены или отсутствует данные.");
-        return map;
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, PropertyReferenceException.class, InvalidDataAccessApiUsageException.class})
-    public Map<String, String> handleHttpMessageNotReadableException() {
+    public ResponseEntity<?> handleHttpMessageNotReadableException() {
         Map<String, String> map = new HashMap<>();
         map.put("message", "Запрос не может быть обработан.");
-        return map;
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleAnyException() {
+        Map<String, String> map = new HashMap<>();
+        map.put("message", "Произошла ошибка.");
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(map);
     }
 }

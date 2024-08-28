@@ -3,7 +3,6 @@ package com.leeknow.summapp.service;
 import com.leeknow.summapp.dto.ApplicationRequestDTO;
 import com.leeknow.summapp.dto.ApplicationResponseDTO;
 import com.leeknow.summapp.dto.DataSearchDTO;
-import com.leeknow.summapp.dto.UserResponseDTO;
 import com.leeknow.summapp.entity.Application;
 import com.leeknow.summapp.entity.User;
 import com.leeknow.summapp.enums.ApplicationStatus;
@@ -15,13 +14,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Map;
@@ -142,16 +139,11 @@ class ApplicationServiceTest {
         when(applicationRepository.findById(1)).thenReturn(Optional.of(application));
 
         //when
-        Map<String, Object> result = applicationService.findById(1);
+        ApplicationResponseDTO applicationDto = applicationService.findById(1);
 
         //then
-        assertNotNull(result);
-        assertTrue(result.containsKey("application"));
-        assertNotNull(result.get("application"));
-        assertInstanceOf(ApplicationResponseDTO.class, result.get("application"));
-        assertTrue(result.containsKey("status"));
-        assertNotNull(result.get("status"));
-        assertEquals(result.get("status"), HttpStatus.OK.value());
+        assertNotNull(applicationDto);
+        assertInstanceOf(ApplicationResponseDTO.class, applicationDto);
 
         //verify
         verify(applicationRepository, times(1)).findById(1);
@@ -167,15 +159,10 @@ class ApplicationServiceTest {
         when(applicationRepository.findById(1)).thenReturn(Optional.empty());
 
         //when
-        Map<String, Object> result = applicationService.findById(1);
+        ApplicationResponseDTO applicationDto = applicationService.findById(1);
 
         //then
-        assertNotNull(result);
-        assertTrue(result.containsKey("application"));
-        assertNull(result.get("application"));
-        assertTrue(result.containsKey("status"));
-        assertNotNull(result.get("status"));
-        assertEquals(result.get("status"), HttpStatus.NOT_FOUND.value());
+        assertNull(applicationDto);
 
         //verify
         verify(applicationRepository, times(1)).findById(1);

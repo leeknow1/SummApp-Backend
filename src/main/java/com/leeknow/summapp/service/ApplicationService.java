@@ -51,11 +51,8 @@ public class ApplicationService {
         return result;
     }
 
-    public Map<String, Object> findById(Integer id) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("application", toResponseDtoApplication(applicationRepository.findById(id).orElse(null)));
-        result.put("status", result.get("application") == null ? HttpStatus.NOT_FOUND.value() : HttpStatus.OK.value());
-        return result;
+    public ApplicationResponseDTO findById(Integer id) {
+        return toResponseDtoApplication(applicationRepository.findById(id).orElse(null));
     }
 
     public Map<String, ApplicationResponseDTO> save(ApplicationRequestDTO applicationRequestDTO) {

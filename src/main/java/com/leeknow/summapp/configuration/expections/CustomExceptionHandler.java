@@ -8,6 +8,7 @@ import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -60,6 +61,14 @@ public class CustomExceptionHandler {
         map.put("message", "Запрос не может быть обработан.");
         logService.save(LogType.CRITICAL.getId(), exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handleAccessDeniedException(AccessDeniedException exception) {
+        Map<String, String> map = new HashMap<>();
+        map.put("message", exception.getMessage());
+        logService.save(LogType.NORMAL.getId(), exception);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(map);
     }
 
     @ExceptionHandler(Throwable.class)

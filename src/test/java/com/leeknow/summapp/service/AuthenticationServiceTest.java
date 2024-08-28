@@ -5,8 +5,6 @@ import com.leeknow.summapp.configuration.JWT.JwtService;
 import com.leeknow.summapp.dto.UserLoginDTO;
 import com.leeknow.summapp.dto.UserRegistrationDTO;
 import com.leeknow.summapp.entity.User;
-import com.leeknow.summapp.enums.ApplicationStatus;
-import com.leeknow.summapp.enums.ApplicationType;
 import com.leeknow.summapp.enums.EventType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

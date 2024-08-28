@@ -23,4 +23,12 @@ public class FileEntity {
 
     @Column(columnDefinition = "longblob")
     private byte[] content;
+
+    @ManyToOne
+    @JoinColumn(name = "application_id")
+    private Application application;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

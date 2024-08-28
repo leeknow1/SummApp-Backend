@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -21,7 +22,7 @@ public class ApplicationController {
     private final ApplicationService applicationService;
 
     @PostMapping("/all")
-    public ResponseEntity<?> getALlApplication(@RequestBody DataSearchDTO searchDTO) {
+    public ResponseEntity<?> getAllApplication(@RequestBody DataSearchDTO searchDTO) {
         Map<String, Page<ApplicationResponseDTO>> result = applicationService.findAll(searchDTO);
         return ResponseEntity.ok().body(result);
     }
@@ -34,7 +35,10 @@ public class ApplicationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getApplicationById(@PathVariable("id") Integer id) {
-        Map<String, Object> result = applicationService.findById(id);
+        ApplicationResponseDTO application = applicationService.findById(id);
+        Map<String, Object> result = new HashMap<>();
+        result.put("application", application);
+        result.put("status", application == null ? HttpStatus.NOT_FOUND.value() : HttpStatus.OK.value());
         return ResponseEntity.status((int) result.get("status")).body(result);
     }
 

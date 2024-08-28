@@ -24,9 +24,10 @@ public class FileController {
 
     private final FileService fileService;
 
-    @PostMapping("/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-        Map<String, Object> result = fileService.uploadFile(file);
+    @PostMapping("/upload/{applicationId}")
+    public ResponseEntity<?> uploadFile(@PathVariable("applicationId") Integer applicationId,
+                                        @RequestParam("file") MultipartFile file) throws IOException {
+        Map<String, Object> result = fileService.uploadFile(applicationId, file);
         return ResponseEntity.ok().body(result);
     }
 

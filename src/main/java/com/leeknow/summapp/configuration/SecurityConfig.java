@@ -34,6 +34,12 @@ public class SecurityConfig {
 
     private final UserRepository userRepository;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final String[] SWAGGER_API = {
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/swagger-resources"
+    };
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -64,6 +70,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/sign-in", "/auth/sign-up").permitAll()
+                        .requestMatchers(SWAGGER_API).permitAll()
                         .requestMatchers("/home", "/file/**", "/ai/**").authenticated()
                         .requestMatchers("/application/all").hasAnyAuthority(Role.EMPLOYEE.getRoleName(), Role.ADMIN.getRoleName())
                         .requestMatchers("/application/{id}/status").hasAnyAuthority(Role.EMPLOYEE.getRoleName(), Role.ADMIN.getRoleName())

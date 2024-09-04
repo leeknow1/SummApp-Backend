@@ -75,7 +75,7 @@ public class SecurityConfig {
                         .requestMatchers("/application/all").hasAnyAuthority(Role.EMPLOYEE.getRoleName(), Role.ADMIN.getRoleName())
                         .requestMatchers("/application/{id}/status").hasAnyAuthority(Role.EMPLOYEE.getRoleName(), Role.ADMIN.getRoleName())
                         .requestMatchers("/application/**").authenticated()
-                        .requestMatchers("/events/**").hasAuthority(Role.ADMIN.getRoleName())
+                        .requestMatchers("/events/**", "/actuator/**").hasAuthority(Role.ADMIN.getRoleName())
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

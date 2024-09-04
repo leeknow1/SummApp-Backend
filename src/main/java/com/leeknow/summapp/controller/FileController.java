@@ -43,4 +43,17 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(file.get().getFileName(), StandardCharsets.UTF_8) + "\"")
                 .body(new ByteArrayResource(file.get().getContent()));
     }
+
+    @GetMapping("/view/{id}")
+    public ResponseEntity<?> viewPdf(@PathVariable Integer id) {
+
+        Optional<FileEntity> file = fileService.getFile(id);
+        if (file.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Файл не найден!");
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + URLEncoder.encode(file.get().getFileName(), StandardCharsets.UTF_8))
+                .body(new ByteArrayResource(file.get().getContent()));
+    }
 }

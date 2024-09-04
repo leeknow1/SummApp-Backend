@@ -27,19 +27,22 @@ public class FileService {
     public Map<String, Object> uploadFile(Integer applicationId, MultipartFile multipartFile) throws IOException {
         Map<String, Object> result = new HashMap<>();
 
-        Optional<Application> application = applicationRepository.findById(applicationId);
-
         FileEntity file = new FileEntity();
         file.setFileName(multipartFile.getOriginalFilename());
         file.setFileType(multipartFile.getContentType());
         file.setFileSize(multipartFile.getSize());
         file.setContent(multipartFile.getBytes());
 
+        Optional<Application> application = applicationRepository.findById(applicationId);
         if (application.isPresent()) {
             file.setApplication(application.get());
             file.setUser(application.get().getUser());
         } else {
             throw new IllegalArgumentException(); // Если заявка не найдена
+        }
+
+        if (!file.getFileName().endsWith(".pdf")) {
+            throw new IllegalArgumentException(); // Неверный формат файла
         }
 
         fileRepository.save(file);

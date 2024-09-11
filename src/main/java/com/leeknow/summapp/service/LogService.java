@@ -28,6 +28,16 @@ public class LogService {
         logToSave.setLog(builder.toString());
 
         logToSave = logRepository.save(logToSave);
-        log.info("added log --> " + logToSave.getLogId());
+        log.info("added log --> " + logToSave.getLogId(), exception);
+    }
+
+    public void save(int type, String message) {
+        Log logToSave = new Log();
+        logToSave.setLogType(type);
+        logToSave.setLogDate(new Timestamp(System.currentTimeMillis()));
+        logToSave.setLog(message);
+
+        logToSave = logRepository.save(logToSave);
+        log.info("system log --> " + logToSave.getLogId() + "," + message);
     }
 }

@@ -21,13 +21,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CustomExceptionHandler {
 
-    private final LogService logService;
+    private final LogService log;
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         Map<String, String> map = new HashMap<>();
         exception.getBindingResult().getFieldErrors().stream().findFirst().ifPresent(fieldError -> map.put("message", fieldError.getDefaultMessage()));
-        logService.save(LogType.NORMAL.getId(), exception);
+        log.save(LogType.NORMAL.getId(), exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
     }
 
@@ -35,7 +35,7 @@ public class CustomExceptionHandler {
     public ResponseEntity<?> handleUserAlreadyExistException(UserAlreadyExistException exception) {
         Map<String, String> map = new HashMap<>();
         map.put("message", exception.getMessage());
-        logService.save(LogType.NORMAL.getId(), exception);
+        log.save(LogType.NORMAL.getId(), exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
     }
 
@@ -43,7 +43,7 @@ public class CustomExceptionHandler {
     public ResponseEntity<?> handleBadCredentialsException(BadCredentialsException exception) {
         Map<String, String> map = new HashMap<>();
         map.put("message", "Почта или пароль введены неверно.");
-        logService.save(LogType.NORMAL.getId(), exception);
+        log.save(LogType.NORMAL.getId(), exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
     }
 
@@ -51,7 +51,7 @@ public class CustomExceptionHandler {
     public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException exception) {
         Map<String, String> map = new HashMap<>();
         map.put("message", "Неверно введены или отсутствует данные.");
-        logService.save(LogType.NORMAL.getId(), exception);
+        log.save(LogType.NORMAL.getId(), exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
     }
 
@@ -59,7 +59,7 @@ public class CustomExceptionHandler {
     public ResponseEntity<?> handleHttpMessageNotReadableException(Throwable exception) {
         Map<String, String> map = new HashMap<>();
         map.put("message", "Запрос не может быть обработан.");
-        logService.save(LogType.CRITICAL.getId(), exception);
+        log.save(LogType.CRITICAL.getId(), exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
     }
 
@@ -67,7 +67,7 @@ public class CustomExceptionHandler {
     public ResponseEntity<?> handleAccessDeniedException(AccessDeniedException exception) {
         Map<String, String> map = new HashMap<>();
         map.put("message", exception.getMessage());
-        logService.save(LogType.NORMAL.getId(), exception);
+        log.save(LogType.NORMAL.getId(), exception);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(map);
     }
 
@@ -75,7 +75,7 @@ public class CustomExceptionHandler {
     public ResponseEntity<?> handleAnyException(Throwable exception) {
         Map<String, String> map = new HashMap<>();
         map.put("message", "Произошла ошибка.");
-        logService.save(LogType.CRITICAL.getId(), exception);
+        log.save(LogType.CRITICAL.getId(), exception);
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(map);
     }
 }

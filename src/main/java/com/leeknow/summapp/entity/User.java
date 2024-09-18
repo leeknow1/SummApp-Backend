@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 @Entity
 @Table(name = "users")
 @AllArgsConstructor
@@ -24,4 +26,5 @@ public class User {
     private String password;
     private String email;
     private Integer roleId;
+    private Timestamp creationDate;
 }

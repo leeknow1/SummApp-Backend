@@ -28,7 +28,7 @@ public class LogService {
         logToSave.setLog(builder.toString());
 
         logToSave = logRepository.save(logToSave);
-        log.info("added log --> " + logToSave.getLogId(), exception);
+        log.info("ADDED LOG --> " + logToSave.getLogId(), exception);
     }
 
     public void save(int type, String message) {
@@ -38,6 +38,6 @@ public class LogService {
         logToSave.setLog(message);
 
         logToSave = logRepository.save(logToSave);
-        log.info("system log --> " + logToSave.getLogId() + "," + message);
+        log.info("SYSTEM LOG --> " + logToSave.getLogId() + "," + message);
     }
 }

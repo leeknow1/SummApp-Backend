@@ -26,6 +26,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+import static com.leeknow.summapp.configuration.SecurityApiConstant.ADMIN_API;
+import static com.leeknow.summapp.configuration.SecurityApiConstant.SWAGGER_API;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -34,12 +37,6 @@ public class SecurityConfig {
 
     private final UserRepository userRepository;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final String[] SWAGGER_API = {
-            "/swagger-ui/**",
-            "/v3/api-docs/**",
-            "/swagger-resources/**",
-            "/swagger-resources"
-    };
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -75,7 +72,7 @@ public class SecurityConfig {
                         .requestMatchers("/application/all").hasAnyAuthority(Role.EMPLOYEE.getRoleName(), Role.ADMIN.getRoleName())
                         .requestMatchers("/application/{id}/status").hasAnyAuthority(Role.EMPLOYEE.getRoleName(), Role.ADMIN.getRoleName())
                         .requestMatchers("/application/**").authenticated()
-                        .requestMatchers("/events/**", "/actuator/**", "/schedule/**").hasAuthority(Role.ADMIN.getRoleName())
+                        .requestMatchers(ADMIN_API).hasAuthority(Role.ADMIN.getRoleName())
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

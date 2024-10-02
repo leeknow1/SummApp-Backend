@@ -20,4 +20,7 @@ public interface ModuleRepository extends JpaRepository<Module, Integer> {
     @Modifying
     @Query(value = "DELETE FROM modules_users WHERE module_id = :moduleId AND user_id = :userId", nativeQuery = true)
     void deleteUserRightForModule(@Param("moduleId") Integer moduleId, @Param("userId") Integer userId);
+
+    @Query(value = "SELECT COUNT(*) FROM modules_users WHERE module_id = :moduleId AND user_id = :userId", nativeQuery = true)
+    int getUserModule(@Param("moduleId") Integer moduleId, @Param("userId") Integer userId);
 }

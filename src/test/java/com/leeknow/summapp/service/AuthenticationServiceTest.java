@@ -1,6 +1,5 @@
 package com.leeknow.summapp.service;
 
-import com.leeknow.summapp.configuration.CustomUserDetails;
 import com.leeknow.summapp.configuration.JWT.JwtService;
 import com.leeknow.summapp.dto.UserLoginDTO;
 import com.leeknow.summapp.dto.UserRegistrationDTO;
@@ -59,7 +58,7 @@ class AuthenticationServiceTest {
 
         //mock the calls
         when(userService.findByEmail(loginDTO.getEmail())).thenReturn(user);
-        when(jwtService.generateToken(any(CustomUserDetails.class))).thenReturn("token");
+        when(jwtService.generateToken(any(User.class))).thenReturn("token");
 
         //when
         Map<String, Object> result = authenticationService.signIn(loginDTO);
@@ -73,7 +72,7 @@ class AuthenticationServiceTest {
         //verify
         verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(userService, times(1)).findByEmail(loginDTO.getEmail());
-        verify(jwtService, times(1)).generateToken(any(CustomUserDetails.class));
+        verify(jwtService, times(1)).generateToken(any(User.class));
         verify(jwtService, times(1)).generateRefreshToken(user);
         verify(eventService, times(1)).create(EventType.SIGNING_IN.getId(), user);
     }
@@ -94,7 +93,7 @@ class AuthenticationServiceTest {
         //mock the calls
         when(userService.findByEmail(registrationDTO.getEmail())).thenReturn(null);
         when(userService.save(any(User.class))).thenReturn(createdMap);
-        when(jwtService.generateToken(any(CustomUserDetails.class))).thenReturn("token");
+        when(jwtService.generateToken(any(User.class))).thenReturn("token");
 
         //when
         Map<String, Object> result = authenticationService.signUp(registrationDTO);
@@ -107,7 +106,7 @@ class AuthenticationServiceTest {
 
         //verify
         verify(userService, times(1)).findByEmail(registrationDTO.getEmail());
-        verify(jwtService, times(1)).generateToken(any(CustomUserDetails.class));
+        verify(jwtService, times(1)).generateToken(any(User.class));
         verify(jwtService, times(1)).generateRefreshToken(createdUser);
         verify(eventService, times(1)).create(EventType.NEW_USER.getId(), createdUser);
     }

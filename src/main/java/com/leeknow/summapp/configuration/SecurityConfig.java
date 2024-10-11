@@ -1,7 +1,7 @@
 package com.leeknow.summapp.configuration;
 
 import com.leeknow.summapp.configuration.JWT.JwtAuthenticationFilter;
-import com.leeknow.summapp.enums.Role;
+import com.leeknow.summapp.enums.RoleEnums;
 import com.leeknow.summapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -69,10 +69,10 @@ public class SecurityConfig {
                         .requestMatchers("/auth/sign-in", "/auth/sign-up").permitAll()
                         .requestMatchers(SWAGGER_API).permitAll()
                         .requestMatchers("/home", "/file/**", "/ai/**").authenticated()
-                        .requestMatchers("/application/all").hasAnyAuthority(Role.EMPLOYEE.getRoleName(), Role.ADMIN.getRoleName())
-                        .requestMatchers("/application/{id}/status").hasAnyAuthority(Role.EMPLOYEE.getRoleName(), Role.ADMIN.getRoleName())
+                        .requestMatchers("/application/all").hasAnyAuthority(RoleEnums.EMPLOYEE.getRoleName(), RoleEnums.ADMIN.getRoleName())
+                        .requestMatchers("/application/{id}/status").hasAnyAuthority(RoleEnums.EMPLOYEE.getRoleName(), RoleEnums.ADMIN.getRoleName())
                         .requestMatchers("/application/**").authenticated()
-                        .requestMatchers(ADMIN_API).hasAuthority(Role.ADMIN.getRoleName())
+                        .requestMatchers(ADMIN_API).hasAuthority(RoleEnums.ADMIN.getRoleName())
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

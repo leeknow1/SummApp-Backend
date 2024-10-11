@@ -3,7 +3,7 @@ package com.leeknow.summapp.service;
 import com.leeknow.summapp.entity.Application;
 import com.leeknow.summapp.entity.FileEntity;
 import com.leeknow.summapp.entity.User;
-import com.leeknow.summapp.enums.Role;
+import com.leeknow.summapp.enums.RoleEnums;
 import com.leeknow.summapp.repository.ApplicationRepository;
 import com.leeknow.summapp.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +55,7 @@ public class FileService {
         Optional<FileEntity> file = fileRepository.findById(id);
 
         if (file.isPresent()
-                && user.getRoleId().equals(Role.USER.getRoleId())
+                && user.getRoles().stream().anyMatch(role -> role.getRoleId().equals(RoleEnums.USER.getRoleId()))
                 && !file.get().getUser().getUserId().equals(user.getUserId())) {
             throw new AccessDeniedException("Доступ к файлу запрещен.");
         }

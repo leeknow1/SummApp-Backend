@@ -1,13 +1,13 @@
 package com.leeknow.summapp.service;
 
-import com.leeknow.summapp.configuration.CustomUserDetails;
 import com.leeknow.summapp.configuration.JWT.JwtService;
 import com.leeknow.summapp.configuration.expections.UserAlreadyExistException;
 import com.leeknow.summapp.dto.UserLoginDTO;
 import com.leeknow.summapp.dto.UserRegistrationDTO;
+import com.leeknow.summapp.entity.Role;
 import com.leeknow.summapp.entity.User;
 import com.leeknow.summapp.enums.EventType;
-import com.leeknow.summapp.enums.Role;
+import com.leeknow.summapp.enums.RoleEnums;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class AuthenticationService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
 
         User user = userService.findByEmail(dto.getEmail());
-        String token = jwtService.generateToken(new CustomUserDetails(user));
+        String token = jwtService.generateToken(user);
         jwtService.generateRefreshToken(user);
 
         response.put("token", token);
@@ -54,10 +55,10 @@ public class AuthenticationService {
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setRoleId(Role.USER.getRoleId());
+        user.setRoles(Set.of(new Role(RoleEnums.USER.getRoleId(), RoleEnums.USER.getRoleName())));
 
         user = userService.save(user).get("user");
-        String token = jwtService.generateToken(new CustomUserDetails(user));
+        String token = jwtService.generateToken(user);
         jwtService.generateRefreshToken(user);
 
         response.put("token", token);

@@ -1,6 +1,6 @@
 package com.leeknow.summapp.interfaces;
 
-import com.leeknow.summapp.enums.Module;
+import com.leeknow.summapp.enums.ModuleEnums;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ModuleChecker {
 
-    Module[] value();
+    ModuleEnums[] value();
 }

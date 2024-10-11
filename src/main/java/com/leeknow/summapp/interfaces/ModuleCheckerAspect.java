@@ -1,7 +1,7 @@
 package com.leeknow.summapp.interfaces;
 
 import com.leeknow.summapp.entity.User;
-import com.leeknow.summapp.enums.Module;
+import com.leeknow.summapp.enums.ModuleEnums;
 import com.leeknow.summapp.repository.ModuleRepository;
 import com.leeknow.summapp.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class ModuleCheckerAspect {
 
         if (method != null && method.isAnnotationPresent(ModuleChecker.class)) {
             ModuleChecker annotation = method.getAnnotation(ModuleChecker.class);
-            Module[] modules = annotation.value();
+            ModuleEnums[] modules = annotation.value();
             check(modules, user);
         }
     }
@@ -44,13 +44,13 @@ public class ModuleCheckerAspect {
         Class<?> aClass = joinPoint.getTarget().getClass();
         if(aClass.isAnnotationPresent(ModuleChecker.class)) {
             ModuleChecker annotation = aClass.getAnnotation(ModuleChecker.class);
-            Module[] modules = annotation.value();
+            ModuleEnums[] modules = annotation.value();
             check(modules, user);
         }
     }
 
-    private void check(Module[] modules, User user) throws AccessDeniedException {
-        for (Module module : modules) {
+    private void check(ModuleEnums[] modules, User user) throws AccessDeniedException {
+        for (ModuleEnums module : modules) {
             int access = moduleRepository.getUserModule(module.getId(), user.getUserId());
             if (access == 0) {
                 throw new AccessDeniedException("Нет доступа к модулю.");

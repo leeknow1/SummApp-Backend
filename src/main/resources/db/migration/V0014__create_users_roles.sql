@@ -15,3 +15,7 @@ CREATE TABLE `summapp`.`users_roles`
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
 );
+
+INSERT INTO `summapp`.users_roles VALUES (1, 1);
+INSERT INTO `summapp`.users_roles VALUES (2, 2);
+INSERT INTO `summapp`.users_roles VALUES (3, 3);

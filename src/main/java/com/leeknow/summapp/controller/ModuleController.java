@@ -1,6 +1,6 @@
 package com.leeknow.summapp.controller;
 
-import com.leeknow.summapp.dto.UserRightDTO;
+import com.leeknow.summapp.dto.RoleRightDTO;
 import com.leeknow.summapp.service.ModuleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +16,8 @@ public class ModuleController {
     private final ModuleService moduleService;
 
     @PostMapping("/{id}/rights")
-    public ResponseEntity<?> setRights(@PathVariable Integer id, @RequestBody List<UserRightDTO> users) {
-        moduleService.setUsersRight(id, users);
+    public ResponseEntity<?> setRights(@PathVariable Integer id, @RequestBody List<RoleRightDTO> roles) {
+        moduleService.setUsersRight(id, roles);
         return ResponseEntity.ok("Права успешно установлены");
     }
 }

@@ -3,8 +3,8 @@ package com.leeknow.summapp.dto;
 import lombok.Data;
 
 @Data
-public class UserRightDTO {
+public class RoleRightDTO {
 
-    private Integer userId;
+    private Integer roleId;
     private Integer right;
 }

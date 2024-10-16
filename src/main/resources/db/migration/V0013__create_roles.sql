@@ -6,3 +6,7 @@ CREATE TABLE `summapp`.`roles`
 )
     ENGINE = InnoDB
     AUTO_INCREMENT = 1;
+
+INSERT INTO `summapp`.`roles` (`role_id`, `role_name`) VALUES ('1', 'ROLE_ADMIN');
+INSERT INTO `summapp`.`roles` (`role_id`, `role_name`) VALUES ('2', 'ROLE_USER');
+INSERT INTO `summapp`.`roles` (`role_id`, `role_name`) VALUES ('3', 'ROLE_EMPLOYEE');

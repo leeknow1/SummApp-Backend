@@ -13,14 +13,14 @@ public interface ModuleRepository extends JpaRepository<Module, Integer> {
 
     @Transactional
     @Modifying
-    @Query(value = "INSERT INTO modules_users VALUES (:moduleId, :userId, :right)", nativeQuery = true)
-    void setUserRightForModule(@Param("moduleId") Integer moduleId, @Param("userId") Integer userId, @Param("right") Integer right);
+    @Query(value = "INSERT INTO modules_roles VALUES (:moduleId, :roleId, :right)", nativeQuery = true)
+    void setUserRightForModule(@Param("moduleId") Integer moduleId, @Param("roleId") Integer roleId, @Param("right") Integer right);
 
     @Transactional
     @Modifying
-    @Query(value = "DELETE FROM modules_users WHERE module_id = :moduleId AND user_id = :userId", nativeQuery = true)
-    void deleteUserRightForModule(@Param("moduleId") Integer moduleId, @Param("userId") Integer userId);
+    @Query(value = "DELETE FROM modules_roles WHERE module_id = :moduleId AND role_id = :roleId", nativeQuery = true)
+    void deleteUserRightForModule(@Param("moduleId") Integer moduleId, @Param("roleId") Integer roleId);
 
-    @Query(value = "SELECT COUNT(*) FROM modules_users WHERE module_id = :moduleId AND user_id = :userId", nativeQuery = true)
-    int getUserModule(@Param("moduleId") Integer moduleId, @Param("userId") Integer userId);
+    @Query(value = "SELECT COUNT(*) FROM modules_roles WHERE module_id = :moduleId AND role_id in (:roleIds)", nativeQuery = true)
+    int getUserModule(@Param("moduleId") Integer moduleId, @Param("roleIds") String roleIds);
 }

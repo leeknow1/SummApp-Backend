@@ -3,6 +3,8 @@ package com.leeknow.summapp.controller;
 import com.leeknow.summapp.dto.ApplicationRequestDTO;
 import com.leeknow.summapp.dto.ApplicationResponseDTO;
 import com.leeknow.summapp.dto.DataSearchDTO;
+import com.leeknow.summapp.enums.ModuleEnums;
+import com.leeknow.summapp.interfaces.ModuleChecker;
 import com.leeknow.summapp.service.ApplicationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/application")
 @RequiredArgsConstructor
+@ModuleChecker(ModuleEnums.APPLICATIONS)
 public class ApplicationController {
 
     private final ApplicationService applicationService;

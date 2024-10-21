@@ -8,7 +8,7 @@ public class ApplicationResponseDTO {
     private String number;
     private String creationDate;
     private String finishDate;
-    private Integer statusId;
-    private Integer typeId;
+    private String status;
+    private String type;
     private UserResponseDTO userResponseDTO;
 }

@@ -74,11 +74,7 @@ public class ScheduleService {
         Optional<Schedule> schedule = scheduleRepository.findById(id);
         if (schedule.isPresent()) {
             AbstractScheduledTask scheduledTask = getTask(schedule.get().getScheduleName());
-            if (scheduledTask == null) {
-                throw new RuntimeException(String.format("Для задачи %s не прописана реализация!", schedule.get().getScheduleName()));
-            } else {
-                startTask(scheduledTask, schedule.get());
-            }
+            startTask(scheduledTask, schedule.get());
             return "Задача успешна запущена!";
         } else {
             return "Не удалось найти задачу в базе данных!";
@@ -107,7 +103,7 @@ public class ScheduleService {
          try {
              task = (AbstractScheduledTask) context.getBean(name);
          } catch (BeansException exception) {
-             throw new RuntimeException("Ошибка с бинами при запуске задач!");
+             throw new RuntimeException(String.format("Для задачи %s не прописана реализация!", name));
          }
          return task;
     }

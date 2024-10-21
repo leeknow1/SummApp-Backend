@@ -8,6 +8,7 @@ import com.leeknow.summapp.entity.User;
 import com.leeknow.summapp.enums.ApplicationStatus;
 import com.leeknow.summapp.enums.ApplicationType;
 import com.leeknow.summapp.enums.EventType;
+import com.leeknow.summapp.enums.Language;
 import com.leeknow.summapp.repository.ApplicationRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,7 +69,7 @@ class ApplicationServiceTest {
                         Sort.by(searchDTO.getSort())))).thenReturn(applications);
 
         //when
-        Map<String, Page<ApplicationResponseDTO>> result = applicationService.findAll(searchDTO);
+        Map<String, Page<ApplicationResponseDTO>> result = applicationService.findAll(searchDTO, Language.RUSSIAN);
 
         //then
         assertNotNull(result);
@@ -108,7 +109,7 @@ class ApplicationServiceTest {
                 Sort.by(searchDTO.getSort())))).thenReturn(applications);
 
         //when
-        Map<String, Page<ApplicationResponseDTO>> result = applicationService.findAllByCurrentUser(searchDTO);
+        Map<String, Page<ApplicationResponseDTO>> result = applicationService.findAllByCurrentUser(searchDTO, 1);
 
         //then
         assertNotNull(result);
@@ -139,7 +140,7 @@ class ApplicationServiceTest {
         when(applicationRepository.findById(1)).thenReturn(Optional.of(application));
 
         //when
-        ApplicationResponseDTO applicationDto = applicationService.findById(1);
+        ApplicationResponseDTO applicationDto = applicationService.findById(1, Language.RUSSIAN);
 
         //then
         assertNotNull(applicationDto);
@@ -159,7 +160,7 @@ class ApplicationServiceTest {
         when(applicationRepository.findById(1)).thenReturn(Optional.empty());
 
         //when
-        ApplicationResponseDTO applicationDto = applicationService.findById(1);
+        ApplicationResponseDTO applicationDto = applicationService.findById(1, Language.RUSSIAN);
 
         //then
         assertNull(applicationDto);
@@ -186,7 +187,7 @@ class ApplicationServiceTest {
         when(applicationRepository.save(any(Application.class))).thenReturn(createdApplication);
 
         //when
-        Map<String, ApplicationResponseDTO> result = applicationService.save(requestDTO);
+        Map<String, ApplicationResponseDTO> result = applicationService.save(requestDTO, Language.getLanguageById(Integer.parseInt(lang)));
 
         //then
         assertNotNull(result);

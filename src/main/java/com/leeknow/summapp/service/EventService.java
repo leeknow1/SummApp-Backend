@@ -6,6 +6,7 @@ import com.leeknow.summapp.entity.Event;
 import com.leeknow.summapp.entity.User;
 import com.leeknow.summapp.enums.ApplicationStatus;
 import com.leeknow.summapp.enums.EventType;
+import com.leeknow.summapp.enums.Language;
 import com.leeknow.summapp.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -67,7 +68,7 @@ public class EventService {
             return "Создана новая заявка " + application.getNumber() + "(" + application.getApplicationId() +
                     ") от пользователя" + getUserFullName(user) + "(" + user.getUserId() + ").";
         } else if (typeId == EventType.APPLICATION_STATUS_CHANGED.getId()) {
-            return "Присвоен новый статус \"" + ApplicationStatus.getNameById(application.getStatusId()) + "\" для заявки "
+            return "Присвоен новый статус \"" + ApplicationStatus.getNameById(application.getStatusId(), Language.RUSSIAN) + "\" для заявки "
                     + application.getNumber() + "(" + application.getApplicationId() +
                     ") от пользователя " + getUserFullName(user) + "(" + user.getUserId() + ").";
         } else {

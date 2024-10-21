@@ -3,6 +3,7 @@ package com.leeknow.summapp.controller;
 import com.leeknow.summapp.dto.ApplicationRequestDTO;
 import com.leeknow.summapp.dto.ApplicationResponseDTO;
 import com.leeknow.summapp.dto.DataSearchDTO;
+import com.leeknow.summapp.enums.Language;
 import com.leeknow.summapp.enums.ModuleEnums;
 import com.leeknow.summapp.interfaces.ModuleChecker;
 import com.leeknow.summapp.service.ApplicationService;
@@ -25,20 +26,25 @@ public class ApplicationController {
     private final ApplicationService applicationService;
 
     @PostMapping("/all")
-    public ResponseEntity<?> getAllApplication(@RequestBody DataSearchDTO searchDTO) {
-        Map<String, Page<ApplicationResponseDTO>> result = applicationService.findAll(searchDTO);
+    public ResponseEntity<?> getAllApplication(@RequestBody DataSearchDTO searchDTO,
+                                               @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
+        Map<String, Page<ApplicationResponseDTO>> result =
+                applicationService.findAll(searchDTO, Language.getLanguageById(Integer.parseInt(lang)));
         return ResponseEntity.ok().body(result);
     }
 
     @PostMapping("/user")
-    public ResponseEntity<?> getAllApplicationByCurrentUser(@RequestBody DataSearchDTO searchDTO) {
-        Map<String, Page<ApplicationResponseDTO>> result = applicationService.findAllByCurrentUser(searchDTO);
+    public ResponseEntity<?> getAllApplicationByCurrentUser(@RequestBody DataSearchDTO searchDTO,
+                                                            @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
+        Map<String, Page<ApplicationResponseDTO>> result =
+                applicationService.findAllByCurrentUser(searchDTO, Language.getLanguageById(Integer.parseInt(lang)));
         return ResponseEntity.ok().body(result);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getApplicationById(@PathVariable("id") Integer id) {
-        ApplicationResponseDTO application = applicationService.findById(id);
+    public ResponseEntity<?> getApplicationById(@PathVariable("id") Integer id,
+                                                @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
+        ApplicationResponseDTO application = applicationService.findById(id, Language.getLanguageById(Integer.parseInt(lang)));
         Map<String, Object> result = new HashMap<>();
         result.put("application", application);
         result.put("status", application == null ? HttpStatus.NOT_FOUND.value() : HttpStatus.OK.value());
@@ -46,8 +52,10 @@ public class ApplicationController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createApplication(@RequestBody @Valid ApplicationRequestDTO applicationRequestDTO) {
-        Map<String, ApplicationResponseDTO> result = applicationService.save(applicationRequestDTO);
+    public ResponseEntity<?> createApplication(@RequestBody @Valid ApplicationRequestDTO applicationRequestDTO,
+                                               @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
+        Map<String, ApplicationResponseDTO> result =
+                applicationService.save(applicationRequestDTO, Language.getLanguageById(Integer.parseInt(lang)));
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 

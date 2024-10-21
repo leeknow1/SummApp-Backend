@@ -7,13 +7,14 @@ import com.leeknow.summapp.dto.UserResponseDTO;
 import com.leeknow.summapp.entity.Application;
 import com.leeknow.summapp.entity.User;
 import com.leeknow.summapp.enums.ApplicationStatus;
+import com.leeknow.summapp.enums.ApplicationType;
 import com.leeknow.summapp.enums.EventType;
+import com.leeknow.summapp.enums.Language;
 import com.leeknow.summapp.repository.ApplicationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -30,32 +31,32 @@ public class ApplicationService {
     private final UserService userService;
     private final EventService eventService;
 
-    public Map<String, Page<ApplicationResponseDTO>> findAll(DataSearchDTO searchDTO) {
+    public Map<String, Page<ApplicationResponseDTO>> findAll(DataSearchDTO searchDTO, Language language) {
         Map<String, Page<ApplicationResponseDTO>> result = new HashMap<>();
         Page<Application> applications = applicationRepository.findAll(PageRequest.of(
                 searchDTO.getPage(),
                 searchDTO.getSize(),
                 Sort.by(searchDTO.getSort())));
-        result.put("applications", applications.map(this::toResponseDtoApplication));
+        result.put("applications", applications.map(application -> toResponseDtoApplication(application, language)));
         return result;
     }
 
-    public Map<String, Page<ApplicationResponseDTO>> findAllByCurrentUser(DataSearchDTO searchDTO) {
+    public Map<String, Page<ApplicationResponseDTO>> findAllByCurrentUser(DataSearchDTO searchDTO, Language language) {
         Map<String, Page<ApplicationResponseDTO>> result = new HashMap<>();
         User user = userService.getCurrentUser();
         Page<Application> applications = applicationRepository.findAllByUser(user, PageRequest.of(
                 searchDTO.getPage(),
                 searchDTO.getSize(),
                 Sort.by(searchDTO.getSort())));
-        result.put("applications", applications.map(this::toResponseDtoApplication));
+        result.put("applications", applications.map(application -> toResponseDtoApplication(application, language)));
         return result;
     }
 
-    public ApplicationResponseDTO findById(Integer id) {
-        return toResponseDtoApplication(applicationRepository.findById(id).orElse(null));
+    public ApplicationResponseDTO findById(Integer id, Language language) {
+        return toResponseDtoApplication(applicationRepository.findById(id).orElse(null), language);
     }
 
-    public Map<String, ApplicationResponseDTO> save(ApplicationRequestDTO applicationRequestDTO) {
+    public Map<String, ApplicationResponseDTO> save(ApplicationRequestDTO applicationRequestDTO, Language language) {
         Map<String, ApplicationResponseDTO> result = new HashMap<>();
         Application application = new Application();
         application.setUser(userService.getCurrentUser());
@@ -64,7 +65,7 @@ public class ApplicationService {
         application.setTypeId(applicationRequestDTO.getTypeId());
         application.setCreationDate(new Timestamp(System.currentTimeMillis()));
         application = applicationRepository.save(application);
-        result.put("application", toResponseDtoApplication(application));
+        result.put("application", toResponseDtoApplication(application, language));
         eventService.create(EventType.APPLICATION_CREATED.getId(), application);
         return result;
     }
@@ -94,15 +95,15 @@ public class ApplicationService {
         return randomNumber.toString();
     }
 
-    private ApplicationResponseDTO toResponseDtoApplication(Application application) {
+    private ApplicationResponseDTO toResponseDtoApplication(Application application, Language language) {
         if (application != null) {
             ApplicationResponseDTO responseDTO = new ApplicationResponseDTO();
             responseDTO.setApplicationId(application.getApplicationId());
             responseDTO.setNumber(application.getNumber());
             responseDTO.setCreationDate(formatDate(application.getCreationDate()));
             responseDTO.setFinishDate(formatDate(application.getFinishDate()));
-            responseDTO.setStatusId(application.getStatusId());
-            responseDTO.setTypeId(application.getTypeId());
+            responseDTO.setStatus(ApplicationStatus.getNameById(application.getStatusId(), language));
+            responseDTO.setType(ApplicationType.getNameById(application.getTypeId(), language));
             responseDTO.setUserResponseDTO(toResponseDtoUser(application.getUser()));
             return responseDTO;
         }

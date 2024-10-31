@@ -29,4 +29,8 @@ public enum Language {
         }
         throw new IllegalArgumentException();
     }
+
+    public static Language getLanguageById(String id) {
+        return getLanguageById(Integer.parseInt(id));
+    }
 }

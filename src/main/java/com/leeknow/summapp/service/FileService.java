@@ -1,8 +1,10 @@
 package com.leeknow.summapp.service;
 
+import com.leeknow.summapp.constant.FileMessageConstant;
 import com.leeknow.summapp.entity.Application;
 import com.leeknow.summapp.entity.FileEntity;
 import com.leeknow.summapp.entity.User;
+import com.leeknow.summapp.enums.Language;
 import com.leeknow.summapp.enums.RoleEnums;
 import com.leeknow.summapp.repository.ApplicationRepository;
 import com.leeknow.summapp.repository.FileRepository;
@@ -24,7 +26,7 @@ public class FileService {
     private final ApplicationRepository applicationRepository;
     private final UserService userService;
 
-    public Map<String, Object> uploadFile(Integer applicationId, MultipartFile multipartFile) throws IOException {
+    public Map<String, Object> uploadFile(Integer applicationId, MultipartFile multipartFile, Language language) throws IOException {
         Map<String, Object> result = new HashMap<>();
 
         FileEntity file = new FileEntity();
@@ -46,18 +48,18 @@ public class FileService {
         }
 
         fileRepository.save(file);
-        result.put("message", "Файл сохранен.");
+        result.put("message", MessageService.getMessage(language, FileMessageConstant.FILE_SAVED));
         return result;
     }
 
-    public Optional<FileEntity> getFile(Integer id) {
+    public Optional<FileEntity> getFile(Integer id, Language lang) {
         User user = userService.getCurrentUser();
         Optional<FileEntity> file = fileRepository.findById(id);
 
         if (file.isPresent()
                 && user.getRoles().stream().anyMatch(role -> role.getRoleId().equals(RoleEnums.USER.getRoleId()))
                 && !file.get().getUser().getUserId().equals(user.getUserId())) {
-            throw new AccessDeniedException("Доступ к файлу запрещен.");
+            throw new AccessDeniedException(MessageService.getMessage(lang, FileMessageConstant.FILE_IS_FORBIDDEN));
         }
         return file;
     }

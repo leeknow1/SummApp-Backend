@@ -1,7 +1,10 @@
 package com.leeknow.summapp.controller;
 
+import com.leeknow.summapp.constant.FileMessageConstant;
 import com.leeknow.summapp.entity.FileEntity;
+import com.leeknow.summapp.enums.Language;
 import com.leeknow.summapp.service.FileService;
+import com.leeknow.summapp.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -26,17 +29,20 @@ public class FileController {
 
     @PostMapping("/upload/{applicationId}")
     public ResponseEntity<?> uploadFile(@PathVariable("applicationId") Integer applicationId,
-                                        @RequestParam("file") MultipartFile file) throws IOException {
-        Map<String, Object> result = fileService.uploadFile(applicationId, file);
+                                        @RequestParam("file") MultipartFile file,
+                                        @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) throws IOException {
+        Map<String, Object> result = fileService.uploadFile(applicationId, file, Language.getLanguageById((lang)));
         return ResponseEntity.ok().body(result);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getFile(@PathVariable Integer id) {
-
-        Optional<FileEntity> file = fileService.getFile(id);
+    public ResponseEntity<?> getFile(@PathVariable Integer id,
+                                     @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
+        Language language = Language.getLanguageById((lang));
+        Optional<FileEntity> file = fileService.getFile(id, language);
         if (file.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Файл не найден!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(MessageService.getMessage(language, FileMessageConstant.FILE_NOT_FOUND));
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(file.get().getFileType()))
@@ -45,11 +51,13 @@ public class FileController {
     }
 
     @GetMapping("/view/{id}")
-    public ResponseEntity<?> viewPdf(@PathVariable Integer id) {
-
-        Optional<FileEntity> file = fileService.getFile(id);
+    public ResponseEntity<?> viewPdf(@PathVariable Integer id,
+                                     @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
+        Language language = Language.getLanguageById((lang));
+        Optional<FileEntity> file = fileService.getFile(id, language);
         if (file.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Файл не найден!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(MessageService.getMessage(language, FileMessageConstant.FILE_NOT_FOUND));
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_PDF)

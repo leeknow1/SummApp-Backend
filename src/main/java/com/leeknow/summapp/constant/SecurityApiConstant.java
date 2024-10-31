@@ -1,4 +1,4 @@
-package com.leeknow.summapp.configuration;
+package com.leeknow.summapp.constant;
 
 public class SecurityApiConstant {
 

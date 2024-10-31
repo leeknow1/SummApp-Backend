@@ -9,6 +9,7 @@ import com.leeknow.summapp.enums.EventType;
 import com.leeknow.summapp.enums.Language;
 import com.leeknow.summapp.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -61,23 +62,24 @@ public class EventService {
 
     private String getDescription(Integer typeId, User user, Application application) {
         if (typeId == EventType.SIGNING_IN.getId()) {
-            return "Пользователь " + getUserFullName(user) + "(" + user.getUserId() + ") вошёл в систему.";
+            return String.format("Пользователь %s (id = %d) вощёд в систему.", getUserFullName(user), user.getUserId());
         } else if (typeId == EventType.NEW_USER.getId()) {
-            return "Создан новый пользователь " + getUserFullName(user) + "(" + user.getUserId() + ").";
+            return String.format("Создан новый пользователь %s (id = %d).", getUserFullName(user), user.getUserId());
         } else if (typeId == EventType.APPLICATION_CREATED.getId()) {
-            return "Создана новая заявка " + application.getNumber() + "(" + application.getApplicationId() +
-                    ") от пользователя" + getUserFullName(user) + "(" + user.getUserId() + ").";
+            return String.format("Создана новая заявка %s (id = %d) от пользователя %s (id = %d)",
+                    application.getNumber(), application.getApplicationId(), getUserFullName(user), user.getUserId());
         } else if (typeId == EventType.APPLICATION_STATUS_CHANGED.getId()) {
-            return "Присвоен новый статус \"" + ApplicationStatus.getNameById(application.getStatusId(), Language.RUSSIAN) + "\" для заявки "
-                    + application.getNumber() + "(" + application.getApplicationId() +
-                    ") от пользователя " + getUserFullName(user) + "(" + user.getUserId() + ").";
+            return String.format("Присвоен новый статус \"%s\" для заявки %s (id = %d) от пользователя %s (id = %d).",
+                    ApplicationStatus.getNameById(application.getStatusId(), Language.RUSSIAN),
+                    application.getNumber(), application.getApplicationId(),
+                    getUserFullName(user), user.getUserId());
         } else {
             return "";
         }
     }
 
     private String getUserFullName(User user) {
-        return user.getLastName() + " " + user.getFirstName() + (user.getMiddleName().isBlank() ? "" : " " + user.getMiddleName());
+        return user.getLastName() + " " + user.getFirstName() + (StringUtils.isBlank(user.getMiddleName()) ? "" : " " + user.getMiddleName());
     }
 
 }

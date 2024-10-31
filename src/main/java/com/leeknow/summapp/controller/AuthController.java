@@ -2,6 +2,7 @@ package com.leeknow.summapp.controller;
 
 import com.leeknow.summapp.dto.UserLoginDTO;
 import com.leeknow.summapp.dto.UserRegistrationDTO;
+import com.leeknow.summapp.enums.Language;
 import com.leeknow.summapp.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +25,9 @@ public class AuthController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@RequestBody @Valid UserRegistrationDTO user) {
-        Map<String, Object> result = authenticationService.signUp(user);
+    public ResponseEntity<?> signUp(@RequestBody @Valid UserRegistrationDTO user,
+                                    @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
+        Map<String, Object> result = authenticationService.signUp(user, Language.getLanguageById(lang));
         return ResponseEntity.ok().body(result);
     }
 

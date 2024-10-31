@@ -2,11 +2,13 @@ package com.leeknow.summapp.service;
 
 import com.leeknow.summapp.configuration.JWT.JwtService;
 import com.leeknow.summapp.configuration.expections.UserAlreadyExistException;
+import com.leeknow.summapp.constant.AuthMessageConstant;
 import com.leeknow.summapp.dto.UserLoginDTO;
 import com.leeknow.summapp.dto.UserRegistrationDTO;
 import com.leeknow.summapp.entity.Role;
 import com.leeknow.summapp.entity.User;
 import com.leeknow.summapp.enums.EventType;
+import com.leeknow.summapp.enums.Language;
 import com.leeknow.summapp.enums.RoleEnums;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,11 +44,11 @@ public class AuthenticationService {
         return response;
     }
 
-    public Map<String, Object> signUp(UserRegistrationDTO dto) {
+    public Map<String, Object> signUp(UserRegistrationDTO dto, Language lang) {
         Map<String, Object> response = new HashMap<>();
 
         if (userService.findByEmail(dto.getEmail()) != null)
-            throw new UserAlreadyExistException("Пользователь с такой почтой уже существует!");
+            throw new UserAlreadyExistException(MessageService.getMessage(lang, AuthMessageConstant.USER_WITH_THIS_EMAIL_EXIST));
 
         User user = new User();
         user.setFirstName(dto.getFirstName());

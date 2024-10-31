@@ -1,5 +1,6 @@
 package com.leeknow.summapp.service;
 
+import com.leeknow.summapp.constant.ApplicationMessageConstant;
 import com.leeknow.summapp.dto.ApplicationRequestDTO;
 import com.leeknow.summapp.dto.ApplicationResponseDTO;
 import com.leeknow.summapp.dto.DataSearchDTO;
@@ -121,12 +122,12 @@ public class ApplicationService {
         return null;
     }
 
-    public Map<String, String> setStatus(Integer id, Integer status) {
+    public Map<String, String> setStatus(Integer id, Integer status, Language language) {
         Map<String, String> result = new HashMap<>();
         Application application = applicationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         application.setStatusId(status);
         applicationRepository.save(application);
-        result.put("message", "Заявка успешно обновлена!");
+        result.put("message", MessageService.getMessage(language, ApplicationMessageConstant.APPLICATION_UPDATED_SUCCESSFULLY));
         eventService.create(EventType.APPLICATION_STATUS_CHANGED.getId(), application);
         return result;
     }

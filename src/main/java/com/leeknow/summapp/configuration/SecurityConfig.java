@@ -26,8 +26,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-import static com.leeknow.summapp.configuration.SecurityApiConstant.ADMIN_API;
-import static com.leeknow.summapp.configuration.SecurityApiConstant.SWAGGER_API;
+import static com.leeknow.summapp.constant.SecurityApiConstant.ADMIN_API;
+import static com.leeknow.summapp.constant.SecurityApiConstant.SWAGGER_API;
 
 @Configuration
 @EnableWebSecurity

@@ -1,6 +1,8 @@
 package com.leeknow.summapp.service;
 
+import com.leeknow.summapp.constant.ScheduleMessageConstant;
 import com.leeknow.summapp.entity.Schedule;
+import com.leeknow.summapp.enums.Language;
 import com.leeknow.summapp.enums.LogType;
 import com.leeknow.summapp.repository.ScheduleRepository;
 import com.leeknow.summapp.schedules.AbstractScheduledTask;
@@ -70,24 +72,24 @@ public class ScheduleService {
         }
     }
 
-    public String startOneTask(Integer id) {
+    public String startOneTask(Integer id, Language lang) {
         Optional<Schedule> schedule = scheduleRepository.findById(id);
         if (schedule.isPresent()) {
             AbstractScheduledTask scheduledTask = getTask(schedule.get().getScheduleName());
             startTask(scheduledTask, schedule.get());
-            return "Задача успешна запущена!";
+            return MessageService.getMessage(lang, ScheduleMessageConstant.TASK_SUCCESSFULLY_STARTED);
         } else {
-            return "Не удалось найти задачу в базе данных!";
+            return MessageService.getMessage(lang, ScheduleMessageConstant.TASK_NOT_FOUND_IN_DATABASE);
         }
     }
 
-    public String stopOneTask(Integer id) {
+    public String stopOneTask(Integer id, Language lang) {
         Optional<Schedule> schedule = scheduleRepository.findById(id);
         if (schedule.isPresent()) {
             stopTask(schedule.get().getScheduleName());
-            return "Задача успешна остановлена!";
+            return MessageService.getMessage(lang, ScheduleMessageConstant.TASK_SUCCESSFULLY_STOPPED);
         } else {
-            return "Не удалось найти задачу в базе данных!";
+            return MessageService.getMessage(lang, ScheduleMessageConstant.TASK_NOT_FOUND_IN_DATABASE);
         }
     }
 

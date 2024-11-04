@@ -31,6 +31,14 @@ public class AuthController {
         return ResponseEntity.ok().body(result);
     }
 
+    @PostMapping("/{id}/activate")
+    public ResponseEntity<?> activateUser(@PathVariable Integer id,
+                                          @RequestBody String code,
+                                          @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
+        Map<String, Object> result = authenticationService.activate(id, code, Language.getLanguageById(lang));
+        return ResponseEntity.ok().body(result);
+    }
+
     @GetMapping("/refresh-token")
     public String refreshToken() {
         return "refresh token";

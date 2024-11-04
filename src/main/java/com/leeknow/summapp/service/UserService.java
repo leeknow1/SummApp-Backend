@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +22,8 @@ public class UserService {
         return null;
     }
 
-    public Map<String, User> findById(Integer id) {
-        return null;
+    public Optional<User> findById(Integer id) {
+        return userRepository.findById(id);
     }
 
     public Map<String, User> save(User user) {

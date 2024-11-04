@@ -119,7 +119,6 @@ public class MonthlyReportSchedule extends AbstractScheduledTask {
 
                 workbook.write(fileOutputStream);
             } catch (IOException e) {
-                e.printStackTrace();
                 log.save(LogType.CRITICAL.getId(), e);
             }
             log.save(LogType.SYSTEM.getId(), "Зачада monthly-report завершена.");

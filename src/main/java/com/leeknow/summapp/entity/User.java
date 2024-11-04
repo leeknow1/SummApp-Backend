@@ -36,6 +36,10 @@ public class User implements UserDetails, Principal {
     private String middleName;
     private String username;
     private String password;
+    private String activationCode;
+
+    @Column(columnDefinition = "tinyint")
+    private Boolean enabled;
 
     @Column(unique = true)
     private String email;
@@ -88,7 +92,7 @@ public class User implements UserDetails, Principal {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 
     @Override

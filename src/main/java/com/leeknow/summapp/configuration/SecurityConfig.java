@@ -31,17 +31,12 @@ import static com.leeknow.summapp.constant.SecurityApiConstant.SWAGGER_API;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final UserRepository userRepository;
+    private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new CustomUserDetailsService(userRepository);
-    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -66,7 +61,7 @@ public class SecurityConfig {
                 .cors(cors -> corsConfigurationSource())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/sign-in", "/auth/sign-up").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(SWAGGER_API).permitAll()
                         .requestMatchers("/home", "/file/**", "/ai/**").authenticated()
                         .requestMatchers("/application/all").hasAnyAuthority(RoleEnums.EMPLOYEE.getRoleName(), RoleEnums.ADMIN.getRoleName())
@@ -85,7 +80,7 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
-        provider.setUserDetailsService(userDetailsService());
+        provider.setUserDetailsService(userDetailsService);
         return provider;
     }
 

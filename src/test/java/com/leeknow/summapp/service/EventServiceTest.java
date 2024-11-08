@@ -1,11 +1,12 @@
 package com.leeknow.summapp.service;
 
-import com.leeknow.summapp.dto.DataSearchDTO;
-import com.leeknow.summapp.entity.Application;
-import com.leeknow.summapp.entity.Event;
-import com.leeknow.summapp.entity.User;
-import com.leeknow.summapp.enums.EventType;
-import com.leeknow.summapp.repository.EventRepository;
+import com.leeknow.summapp.common.dto.DataSearchDTO;
+import com.leeknow.summapp.application.entity.Application;
+import com.leeknow.summapp.event.entity.Event;
+import com.leeknow.summapp.event.service.EventService;
+import com.leeknow.summapp.user.entity.User;
+import com.leeknow.summapp.event.enums.EventType;
+import com.leeknow.summapp.event.repository.EventRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,9 +33,6 @@ class EventServiceTest {
 
     @Mock
     private EventRepository eventRepository;
-
-    @Mock
-    private UserService userService;
 
     @BeforeEach
     void setUp() {
@@ -103,13 +101,15 @@ class EventServiceTest {
         Event event = new Event();
         event.setEventTime(new Timestamp(System.currentTimeMillis()));
         event.setTypeId(EventType.NEW_USER.getId());
-        event.setDescription("Описание");
+        event.setDescriptionRu("Описание");
+        event.setDescriptionKz("Сипаттамасы");
 
         Event createdEvent = new Event();
         createdEvent.setEventId(1);
         createdEvent.setEventTime(event.getEventTime());
         createdEvent.setTypeId(EventType.NEW_USER.getId());
-        createdEvent.setDescription("Описание");
+        createdEvent.setDescriptionRu("Описание");
+        createdEvent.setDescriptionKz("Сипаттамасы");
 
         //Mock the calls
         when(eventRepository.save(event)).thenReturn(createdEvent);
@@ -119,7 +119,8 @@ class EventServiceTest {
 
         //then
         assertEquals(event.getEventTime(), createdEvent.getEventTime());
-        assertEquals(event.getDescription(), createdEvent.getDescription());
+        assertEquals(event.getDescriptionRu(), createdEvent.getDescriptionRu());
+        assertEquals(event.getDescriptionKz(), createdEvent.getDescriptionKz());
         assertEquals(event.getTypeId(), createdEvent.getTypeId());
         assertEquals(createdEvent.getEventId(), 1);
 

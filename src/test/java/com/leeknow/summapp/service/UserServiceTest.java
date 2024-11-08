@@ -1,7 +1,8 @@
 package com.leeknow.summapp.service;
 
-import com.leeknow.summapp.entity.User;
-import com.leeknow.summapp.repository.UserRepository;
+import com.leeknow.summapp.user.entity.User;
+import com.leeknow.summapp.user.repository.UserRepository;
+import com.leeknow.summapp.user.service.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -5,7 +5,7 @@ import com.leeknow.summapp.application.dto.ApplicationResponseDTO;
 import com.leeknow.summapp.common.dto.DataSearchDTO;
 import com.leeknow.summapp.common.enums.Language;
 import com.leeknow.summapp.module.enums.ModuleEnums;
-import com.leeknow.summapp.module.interfaces.ModuleChecker;
+import com.leeknow.summapp.module.annotation.ModuleChecker;
 import com.leeknow.summapp.application.service.ApplicationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class ApplicationController {
     @PostMapping("/user")
     public ResponseEntity<?> getAllApplicationByCurrentUser(@RequestBody DataSearchDTO searchDTO,
                                                             @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
-        Map<String, Page<ApplicationResponseDTO>> result =
+        Map<String, Object> result =
                 applicationService.findAllByCurrentUser(searchDTO, Language.getLanguageById((lang)));
         return ResponseEntity.ok().body(result);
     }

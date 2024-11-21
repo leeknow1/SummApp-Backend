@@ -1,6 +1,7 @@
 package com.leeknow.summapp.log.service;
 
 import com.leeknow.summapp.log.entity.Log;
+import com.leeknow.summapp.log.enums.LogType;
 import com.leeknow.summapp.log.repository.LogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,9 @@ public class LogService {
         logToSave.setLog(builder.toString());
 
         logToSave = logRepository.save(logToSave);
-        log.info("ADDED LOG --> " + logToSave.getLogId(), exception);
+        log.info("ADDED LOG --> " + logToSave.getLogId());
+
+        if (type == LogType.CRITICAL.getId()) exception.printStackTrace();
     }
 
     public void save(int type, String message) {

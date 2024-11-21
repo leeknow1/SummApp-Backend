@@ -23,7 +23,9 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.leeknow.summapp.application.constant.ApplicationMessageConstant.APPLICATION_UPDATED_SUCCESSFULLY;
 import static com.leeknow.summapp.message.service.MessageService.getMessage;
@@ -46,14 +48,17 @@ public class ApplicationService {
         return result;
     }
 
-    public Map<String, Page<ApplicationResponseDTO>> findAllByCurrentUser(DataSearchDTO searchDTO, Language language) {
-        Map<String, Page<ApplicationResponseDTO>> result = new HashMap<>();
+    public Map<String, Object> findAllByCurrentUser(DataSearchDTO searchDTO, Language language) {
+        Map<String, Object> result = new HashMap<>();
         User user = userService.getCurrentUser();
         Page<Application> applications = applicationRepository.findAllByUser(user, PageRequest.of(
                 searchDTO.getPage(),
                 searchDTO.getSize(),
                 Sort.by(searchDTO.getSort())));
-        result.put("applications", applications.map(application -> toResponseDtoApplication(application, language)));
+
+        List<Application> content = applications.getContent();
+        result.put("applications", toResponseDtoApplication(content, language));
+        result.put("total", applications.getTotalElements());
         return result;
     }
 
@@ -98,6 +103,13 @@ public class ApplicationService {
             randomNumber.append((int) (Math.random() * 6) + 1);
         }
         return randomNumber.toString();
+    }
+
+    private List<ApplicationResponseDTO> toResponseDtoApplication(List<Application> applications, Language language) {
+        if (applications != null) {
+            return applications.stream().map(application -> toResponseDtoApplication(application, language)).collect(Collectors.toList());
+        }
+        return null;
     }
 
     private ApplicationResponseDTO toResponseDtoApplication(Application application, Language language) {

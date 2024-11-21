@@ -1,4 +1,4 @@
-package com.leeknow.summapp.module.interfaces;
+package com.leeknow.summapp.module.annotation;
 
 import com.leeknow.summapp.role.entity.Role;
 import com.leeknow.summapp.user.entity.User;
@@ -26,7 +26,7 @@ public class ModuleCheckerAspect {
     private final ModuleRepository moduleRepository;
     private final UserService userService;
 
-    @Before("@annotation(com.leeknow.summapp.module.interfaces.ModuleChecker)")
+    @Before("@annotation(com.leeknow.summapp.module.annotation.ModuleChecker)")
     public void checkModuleAccessMethod(JoinPoint joinPoint) throws AccessDeniedException {
         User user = userService.getCurrentUser();
 
@@ -41,7 +41,7 @@ public class ModuleCheckerAspect {
         }
     }
 
-    @Before("execution(* *(..)) && @within(com.leeknow.summapp.module.interfaces.ModuleChecker)")
+    @Before("execution(* *(..)) && @within(com.leeknow.summapp.module.annotation.ModuleChecker)")
     public void checkModuleAccessCLass(JoinPoint joinPoint) throws AccessDeniedException {
         User user = userService.getCurrentUser();
 

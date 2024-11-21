@@ -43,7 +43,7 @@ public class AuthenticationService {
 
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
 
-        User user = ((User) authenticate.getCredentials());
+        User user = ((User) authenticate.getPrincipal());
         String token = jwtService.generateToken(user);
         jwtService.generateRefreshToken(user);
 

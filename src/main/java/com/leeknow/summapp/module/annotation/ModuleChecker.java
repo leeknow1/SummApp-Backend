@@ -1,4 +1,4 @@
-package com.leeknow.summapp.module.interfaces;
+package com.leeknow.summapp.module.annotation;
 
 import com.leeknow.summapp.module.enums.ModuleEnums;
 

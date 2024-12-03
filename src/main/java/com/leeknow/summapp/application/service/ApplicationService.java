@@ -2,16 +2,14 @@ package com.leeknow.summapp.application.service;
 
 import com.leeknow.summapp.application.dto.ApplicationRequestDTO;
 import com.leeknow.summapp.application.dto.ApplicationResponseDTO;
-import com.leeknow.summapp.common.dto.DataSearchDTO;
-import com.leeknow.summapp.event.service.EventService;
-import com.leeknow.summapp.user.dto.UserResponseDTO;
 import com.leeknow.summapp.application.entity.Application;
-import com.leeknow.summapp.user.entity.User;
 import com.leeknow.summapp.application.enums.ApplicationStatus;
-import com.leeknow.summapp.application.enums.ApplicationType;
-import com.leeknow.summapp.event.enums.EventType;
-import com.leeknow.summapp.common.enums.Language;
 import com.leeknow.summapp.application.repository.ApplicationRepository;
+import com.leeknow.summapp.common.dto.DataSearchDTO;
+import com.leeknow.summapp.common.enums.Language;
+import com.leeknow.summapp.event.enums.EventType;
+import com.leeknow.summapp.event.service.EventService;
+import com.leeknow.summapp.user.entity.User;
 import com.leeknow.summapp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,9 +23,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.leeknow.summapp.application.constant.ApplicationMessageConstant.APPLICATION_UPDATED_SUCCESSFULLY;
+import static com.leeknow.summapp.application.mapper.ApplicationMapper.toResponseDtoApplication;
 import static com.leeknow.summapp.message.service.MessageService.getMessage;
 
 @Service
@@ -90,52 +88,12 @@ public class ApplicationService {
         applicationRepository.deleteById(id);
     }
 
-    private String formatDate(Timestamp date) {
-        if (date != null) {
-            return new SimpleDateFormat("yyyy-MM-dd HH:ss").format(new Date(date.getTime()));
-        }
-        return "";
-    }
-
     private String getRandomApplicationNumber() {
         StringBuilder randomNumber = new StringBuilder(new SimpleDateFormat("yyyyMMdd").format(new Date()));
         for (int i = 0; i < 4; i++) {
             randomNumber.append((int) (Math.random() * 6) + 1);
         }
         return randomNumber.toString();
-    }
-
-    private List<ApplicationResponseDTO> toResponseDtoApplication(List<Application> applications, Language language) {
-        if (applications != null) {
-            return applications.stream().map(application -> toResponseDtoApplication(application, language)).collect(Collectors.toList());
-        }
-        return null;
-    }
-
-    private ApplicationResponseDTO toResponseDtoApplication(Application application, Language language) {
-        if (application != null) {
-            ApplicationResponseDTO responseDTO = new ApplicationResponseDTO();
-            responseDTO.setApplicationId(application.getApplicationId());
-            responseDTO.setNumber(application.getNumber());
-            responseDTO.setCreationDate(formatDate(application.getCreationDate()));
-            responseDTO.setFinishDate(formatDate(application.getFinishDate()));
-            responseDTO.setStatus(ApplicationStatus.getNameById(application.getStatusId(), language));
-            responseDTO.setType(ApplicationType.getNameById(application.getTypeId(), language));
-            responseDTO.setUserResponseDTO(toResponseDtoUser(application.getUser()));
-            return responseDTO;
-        }
-        return null;
-    }
-
-    private UserResponseDTO toResponseDtoUser(User user) {
-        if (user != null) {
-            UserResponseDTO userDto = new UserResponseDTO();
-            userDto.setFirstName(user.getFirstName());
-            userDto.setMiddleName(user.getMiddleName());
-            userDto.setLastName(user.getLastName());
-            return userDto;
-        }
-        return null;
     }
 
     public Map<String, String> setStatus(Integer id, Integer status, Language language) {

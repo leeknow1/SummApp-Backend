@@ -72,3 +72,18 @@ INSERT INTO messages
 VALUES (15, 'Произошла ошибка.', 'Қате орын алды.')
 ON DUPLICATE KEY UPDATE name_ru = 'Произошла ошибка.',
                         name_kz = 'Қате орын алды.';
+
+INSERT INTO messages
+VALUES (16, 'Пользователя не существует!', 'Пайдаланушы жоқ!')
+ON DUPLICATE KEY UPDATE name_ru = 'Пользователя не существует!',
+                        name_kz = 'Пайдаланушы жоқ!';
+
+INSERT INTO messages
+VALUES (17, 'Пользователь успешно активирован!', 'Пайдаланушы сәтті іске қосылды!')
+ON DUPLICATE KEY UPDATE name_ru = 'Пользователь успешно активирован!',
+                        name_kz = 'Пайдаланушы сәтті іске қосылды!';
+
+INSERT INTO messages
+VALUES (18, 'Введенный код не подходит!', 'Енгізілген код жарамсыз!')
+ON DUPLICATE KEY UPDATE name_ru = 'Введенный код не подходит!',
+                        name_kz = 'Енгізілген код жарамсыз!';

@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.leeknow.summapp.user.constant.AuthMessageConstant.USER_WITH_THIS_EMAIL_EXIST;
 import static com.leeknow.summapp.message.service.MessageService.getMessage;
+import static com.leeknow.summapp.user.constant.AuthMessageConstant.*;
 
 @Service
 @RequiredArgsConstructor
@@ -86,16 +86,16 @@ public class AuthenticationService {
         Map<String, Object> response = new HashMap<>();
         Optional<User> user = userService.findById(id);
 
-        if (user.isEmpty()) throw new AccessDeniedException("Пользователя не сущетсвует!");
+        if (user.isEmpty()) throw new AccessDeniedException(getMessage(lang, USER_DOES_NOT_EXIST));
 
         if (user.get().getActivationCode().equals(code)) {
             user.get().setEnabled(true);
             user.get().setActivationCode(null);
             userService.save(user.get());
-            response.put("message", "Пользователь успешно активирован!");
+            response.put("message", getMessage(lang, USER_SUCCESSFULLY_ACTIVATED));
         }
         else {
-            response.put("message", "Введенный код не подходит!");
+            response.put("message", getMessage(lang, CODE_IS_INCORRECT));
         }
 
         return response;

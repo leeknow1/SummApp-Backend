@@ -2,19 +2,19 @@ package com.leeknow.summapp.service;
 
 import com.leeknow.summapp.application.dto.ApplicationRequestDTO;
 import com.leeknow.summapp.application.dto.ApplicationResponseDTO;
-import com.leeknow.summapp.application.service.ApplicationService;
-import com.leeknow.summapp.common.dto.DataSearchDTO;
 import com.leeknow.summapp.application.entity.Application;
-import com.leeknow.summapp.message.entity.Message;
-import com.leeknow.summapp.event.service.EventService;
-import com.leeknow.summapp.message.service.MessageService;
-import com.leeknow.summapp.user.entity.User;
 import com.leeknow.summapp.application.enums.ApplicationStatus;
 import com.leeknow.summapp.application.enums.ApplicationType;
-import com.leeknow.summapp.event.enums.EventType;
-import com.leeknow.summapp.common.enums.Language;
 import com.leeknow.summapp.application.repository.ApplicationRepository;
+import com.leeknow.summapp.application.service.ApplicationService;
+import com.leeknow.summapp.common.dto.DataSearchDTO;
+import com.leeknow.summapp.common.enums.Language;
+import com.leeknow.summapp.event.enums.EventType;
+import com.leeknow.summapp.event.service.EventService;
+import com.leeknow.summapp.message.entity.Message;
 import com.leeknow.summapp.message.repository.MessageRepository;
+import com.leeknow.summapp.message.service.MessageService;
+import com.leeknow.summapp.user.entity.User;
 import com.leeknow.summapp.user.service.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,9 +79,9 @@ class ApplicationServiceTest {
 
         //mock the calls
         when(applicationRepository.findAll(PageRequest.of(
-                        searchDTO.getPage(),
-                        searchDTO.getSize(),
-                        Sort.by(searchDTO.getSort())))).thenReturn(applications);
+                searchDTO.getPage(),
+                searchDTO.getSize(),
+                Sort.by(searchDTO.getSort())))).thenReturn(applications);
 
         //when
         Map<String, Page<ApplicationResponseDTO>> result = applicationService.findAll(searchDTO, Language.RUSSIAN);
@@ -128,15 +128,14 @@ class ApplicationServiceTest {
                 Sort.by(searchDTO.getSort())))).thenReturn(applications);
 
         //when
-        Map<String, Page<ApplicationResponseDTO>> result = applicationService.findAllByCurrentUser(searchDTO, Language.RUSSIAN);
+        Map<String, Object> result = applicationService.findAllByCurrentUser(searchDTO, Language.RUSSIAN);
 
         //then
         assertNotNull(result);
         assertTrue(result.containsKey("applications"));
         assertNotNull(result.get("applications"));
-        assertEquals(result.get("applications").getTotalElements(), 2);
-        assertNotNull(result.get("applications").getContent());
-        assertInstanceOf(ApplicationResponseDTO.class, result.get("applications").getContent().get(0));
+        assertTrue(result.containsKey("total"));
+        assertEquals(result.get("total"), 2);
 
         //verify
         verify(userService, times(1)).getCurrentUser();

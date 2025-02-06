@@ -1,15 +1,16 @@
 package com.leeknow.summapp.schedule.service;
 
-import com.leeknow.summapp.schedule.entity.Schedule;
 import com.leeknow.summapp.common.enums.Language;
 import com.leeknow.summapp.log.enums.LogType;
 import com.leeknow.summapp.log.service.LogService;
+import com.leeknow.summapp.schedule.entity.Schedule;
 import com.leeknow.summapp.schedule.repository.ScheduleRepository;
 import com.leeknow.summapp.schedule.schedules.AbstractScheduledTask;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeansException;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
@@ -21,8 +22,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ScheduledFuture;
 
-import static com.leeknow.summapp.schedule.constant.ScheduleMessageConstant.*;
 import static com.leeknow.summapp.message.service.MessageService.getMessage;
+import static com.leeknow.summapp.schedule.constant.ScheduleMessageConstant.*;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class ScheduleService {
     private final TaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
     private final Map<String, ScheduledFuture<?>> scheduledTasks = new HashMap<>();
 
-    @PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
     public void init() {
         ((ThreadPoolTaskScheduler) taskScheduler).initialize();
         startAllSchedules();
@@ -58,10 +59,11 @@ public class ScheduleService {
             if (scheduledTasks.containsKey(schedule.getScheduleName())) {
                 stopTask(schedule.getScheduleName());
             }
+            log.save(LogType.SYSTEM.getId(), String.format("Запущена задача %s", schedule.getScheduleName()));
+            scheduledTask.run();
             ScheduledFuture<?> future = taskScheduler.schedule(
                     scheduledTask::run, new CronTrigger(schedule.getCronExpression())
             );
-            log.save(LogType.SYSTEM.getId(), String.format("Запущена задача %s", schedule.getScheduleName()));
             scheduledTasks.put(schedule.getScheduleName(), future);
         }
     }
@@ -105,11 +107,11 @@ public class ScheduleService {
 
     private AbstractScheduledTask getTask(String name) {
         AbstractScheduledTask task;
-         try {
-             task = (AbstractScheduledTask) context.getBean(name);
-         } catch (BeansException exception) {
-             throw new RuntimeException(String.format("Для задачи %s не прописана реализация!", name));
-         }
-         return task;
+        try {
+            task = (AbstractScheduledTask) context.getBean(name);
+        } catch (BeansException exception) {
+            throw new RuntimeException(String.format("Для задачи %s не прописана реализация!", name));
+        }
+        return task;
     }
 }

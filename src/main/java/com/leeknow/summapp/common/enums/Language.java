@@ -8,15 +8,14 @@ import java.util.Objects;
 public enum Language {
 
     RUSSIAN(1),
-    KAZAKH(2)
-    ;
+    KAZAKH(2);
 
+
+    private final Integer id;
 
     Language(Integer id) {
         this.id = id;
     }
-
-    private final Integer id;
 
     public static String getLanguageString(String nameRu, String nameKz, Language language) {
         return Objects.equals(language.getId(), RUSSIAN.getId()) ? nameRu : nameKz;
@@ -31,6 +30,6 @@ public enum Language {
     }
 
     public static Language getLanguageById(String id) {
-        return getLanguageById(Integer.parseInt(id));
+        return getLanguageById(id == null ? RUSSIAN.getId() : Integer.parseInt(id));
     }
 }

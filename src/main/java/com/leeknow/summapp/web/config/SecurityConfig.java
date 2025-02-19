@@ -38,7 +38,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200"));
-        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
@@ -58,13 +58,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/graphiql", "/graphiql/**").permitAll()
                         .requestMatchers(SWAGGER_API).permitAll()
                         .requestMatchers("/home", "/file/**", "/ai/**").authenticated()
                         .requestMatchers("/application/all").hasAnyAuthority(RoleEnums.EMPLOYEE.getRoleName(), RoleEnums.ADMIN.getRoleName())
                         .requestMatchers("/application/{id}/status").hasAnyAuthority(RoleEnums.EMPLOYEE.getRoleName(), RoleEnums.ADMIN.getRoleName())
                         .requestMatchers("/application/**").authenticated()
                         .requestMatchers(ADMIN_API).hasAuthority(RoleEnums.ADMIN.getRoleName())
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         ;

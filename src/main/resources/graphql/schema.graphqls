@@ -1,0 +1,24 @@
+type Query {
+    users: [User]
+    userById(id: Int): User
+}
+
+type User {
+    userId: ID
+    firstName: String
+    lastName: String
+    middleName: String
+    username: String
+    roles: [Role]
+    applications: [Application]
+}
+
+type Role {
+    roleId: ID
+    roleName: String
+}
+
+type Application {
+    applicationId: ID
+    number: String
+}

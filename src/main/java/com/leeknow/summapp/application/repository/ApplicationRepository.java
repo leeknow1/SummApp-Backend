@@ -9,10 +9,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Integer> {
 
     Page<Application> findAllByUser(User user, Pageable pageable);
+    List<Application> findAllByUser(User user);
 
 
     // Monthly report queries

@@ -36,11 +36,15 @@ public class ExchangeRatesAPISchedule extends AbstractScheduledTask {
                     double RUB = EUR / response.getRates().get("RUB"); // тенге в одном рубле
 
                     exchangeRatesRepository.updateExchangeRates(USD, EUR, RUB);
+                    log.save(LogType.SYSTEM.getId(), "Зачада exchange-rates завершена.");
+                    return;
                 }
+                log.save(LogType.SYSTEM.getId(), "Зачада exchange-rates не завершена. Ответ не успешный.");
+                return;
             }
-
+            log.save(LogType.SYSTEM.getId(), "Зачада exchange-rates не завершена. Нет ответа.");
         } catch (Exception e) {
-            log.save(LogType.CRITICAL.getId(), e);
+            log.save(LogType.CRITICAL.getId(), "Зачада exchange-rates не завершена. Произошла ошибка.\n" + e);
         }
     }
 }

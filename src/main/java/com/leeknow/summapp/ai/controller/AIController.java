@@ -20,9 +20,9 @@ public class AIController {
 
     private final AiService aiService;
 
-    @PostMapping("/send/openai")
-    public ResponseEntity<?> sendOpenAI(@RequestBody @Valid SimpleDTO message) {
-        Map<String, Object> result = aiService.sendOpenAI(message);
+    @PostMapping("/send")
+    public ResponseEntity<?> sendMessage(@RequestBody @Valid SimpleDTO message) {
+        Map<String, Object> result = aiService.sendMessage(message);
         return ResponseEntity.ok().body(result);
     }
 

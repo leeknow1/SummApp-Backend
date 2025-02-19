@@ -3,8 +3,8 @@ package com.leeknow.summapp.ai.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leeknow.summapp.common.dto.SimpleDTO;
-import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 public class AiService {
 
     private final ChatClient chatClient;
@@ -26,11 +25,21 @@ public class AiService {
     @Value("${spring.ai.gemini.api-key}")
     private String geminiKey;
 
-    //TODO: not working!
-    public Map<String, Object> sendOpenAI(SimpleDTO message) {
+    public AiService(@Qualifier("ollamaChatClient") ChatClient chatClient) {
+        this.chatClient = chatClient;
+    }
+
+    public Map<String, Object> sendMessage(SimpleDTO message) {
         Map<String, Object> result = new HashMap<>();
         String content;
         content = chatClient.prompt().user(message.getMessage()).call().content();
+
+        if (content != null) {
+            if (content.contains("</think>"))
+                content = content.split("</think>")[1];
+
+            content = removeUnwanted(content);
+        }
         result.put("message", content);
         return result;
     }
@@ -49,9 +58,13 @@ public class AiService {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readTree(response.body());
         String text = jsonNode.path("candidates").get(0).path("content").path("parts").get(0).path("text").asText();
-        text = text.replaceAll("[\n*]", "").replaceAll("[^\\x20-\\x7Eа-яА-ЯёЁ0-9]", "");
+        text = removeUnwanted(text);
 
         result.put("message", text);
         return result;
+    }
+
+    private String removeUnwanted(String text) {
+        return text.replaceAll("[\n*]", "").replaceAll("[^\\x20-\\x7Eа-яА-ЯёЁ0-9]", "");
     }
 }

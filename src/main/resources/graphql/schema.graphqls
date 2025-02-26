@@ -3,6 +3,10 @@ type Query {
     userById(id: Int): User
 }
 
+type Mutation {
+    addUser(user: UserRegistration): User
+}
+
 type User {
     userId: ID
     firstName: String
@@ -11,6 +15,15 @@ type User {
     username: String
     roles: [Role]
     applications: [Application]
+}
+
+input UserRegistration {
+    firstName: String
+    lastName: String
+    middleName: String
+    username: String
+    email: String
+    password: String
 }
 
 type Role {

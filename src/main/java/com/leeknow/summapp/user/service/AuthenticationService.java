@@ -1,15 +1,15 @@
 package com.leeknow.summapp.user.service;
 
+import com.leeknow.summapp.common.enums.Language;
+import com.leeknow.summapp.event.enums.EventType;
 import com.leeknow.summapp.event.service.EventService;
-import com.leeknow.summapp.web.JWT.JwtService;
-import com.leeknow.summapp.web.expections.UserAlreadyExistException;
+import com.leeknow.summapp.role.entity.Role;
+import com.leeknow.summapp.role.enums.RoleEnums;
 import com.leeknow.summapp.user.dto.UserLoginDTO;
 import com.leeknow.summapp.user.dto.UserRegistrationDTO;
-import com.leeknow.summapp.role.entity.Role;
 import com.leeknow.summapp.user.entity.User;
-import com.leeknow.summapp.event.enums.EventType;
-import com.leeknow.summapp.common.enums.Language;
-import com.leeknow.summapp.role.enums.RoleEnums;
+import com.leeknow.summapp.web.JWT.JwtService;
+import com.leeknow.summapp.web.expections.UserAlreadyExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -52,9 +52,16 @@ public class AuthenticationService {
         return response;
     }
 
-    public Map<String, Object> signUp(UserRegistrationDTO dto, Language lang) {
-        Map<String, Object> response = new HashMap<>();
+    public String signUp(UserRegistrationDTO dto, Language lang) {
 
+        User user = createUser(dto, lang);
+        String token = generateToken(user);
+
+        eventService.create(EventType.NEW_USER.getId(), user);
+        return token;
+    }
+
+    public User createUser(UserRegistrationDTO dto, Language lang) {
         if (userService.findByEmail(dto.getEmail()) != null)
             throw new UserAlreadyExistException(getMessage(lang, USER_WITH_THIS_EMAIL_EXIST));
 
@@ -70,16 +77,15 @@ public class AuthenticationService {
 
         String generateRandomActivationCode = generateRandomActivationCode();
         user.setActivationCode(generateRandomActivationCode);
-
-        user = userService.save(user).get("user");
-        String token = jwtService.generateToken(user);
-        jwtService.generateRefreshToken(user);
-
         emailService.sendActivationCode(user.getEmail(), generateRandomActivationCode);
 
-        response.put("token", token);
-        eventService.create(EventType.NEW_USER.getId(), user);
-        return response;
+        return userService.save(user).get("user");
+    }
+
+    private String generateToken(User user) {
+        String token = jwtService.generateToken(user);
+        jwtService.generateRefreshToken(user);
+        return token;
     }
 
     public Map<String, Object> activate(Integer id, String code, Language lang) {
@@ -93,8 +99,7 @@ public class AuthenticationService {
             user.get().setActivationCode(null);
             userService.save(user.get());
             response.put("message", getMessage(lang, USER_SUCCESSFULLY_ACTIVATED));
-        }
-        else {
+        } else {
             response.put("message", getMessage(lang, CODE_IS_INCORRECT));
         }
 

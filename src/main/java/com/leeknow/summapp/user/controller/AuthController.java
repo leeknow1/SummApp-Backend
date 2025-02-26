@@ -1,14 +1,15 @@
 package com.leeknow.summapp.user.controller;
 
+import com.leeknow.summapp.common.enums.Language;
 import com.leeknow.summapp.user.dto.UserLoginDTO;
 import com.leeknow.summapp.user.dto.UserRegistrationDTO;
-import com.leeknow.summapp.common.enums.Language;
 import com.leeknow.summapp.user.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -25,16 +26,14 @@ public class AuthController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@RequestBody @Valid UserRegistrationDTO user,
-                                    @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
-        Map<String, Object> result = authenticationService.signUp(user, Language.getLanguageById(lang));
+    public ResponseEntity<?> signUp(@RequestBody @Valid UserRegistrationDTO user, @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("token", authenticationService.signUp(user, Language.getLanguageById(lang)));
         return ResponseEntity.ok().body(result);
     }
 
     @PostMapping("/{id}/activate")
-    public ResponseEntity<?> activateUser(@PathVariable Integer id,
-                                          @RequestBody String code,
-                                          @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
+    public ResponseEntity<?> activateUser(@PathVariable Integer id, @RequestBody String code, @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
         Map<String, Object> result = authenticationService.activate(id, code, Language.getLanguageById(lang));
         return ResponseEntity.ok().body(result);
     }

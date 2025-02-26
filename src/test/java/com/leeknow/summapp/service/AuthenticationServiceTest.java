@@ -108,7 +108,8 @@ class AuthenticationServiceTest {
         when(jwtService.generateToken(any(User.class))).thenReturn("token");
 
         //when
-        Map<String, Object> result = authenticationService.signUp(registrationDTO, Language.RUSSIAN);
+        Map<String, Object> result = new HashMap<>();
+        result.put("token", authenticationService.signUp(registrationDTO, Language.RUSSIAN));
 
         //then
         assertNotNull(result);

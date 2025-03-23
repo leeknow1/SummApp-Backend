@@ -3,6 +3,7 @@ package com.leeknow.summapp.user.service;
 import com.leeknow.summapp.common.enums.Language;
 import com.leeknow.summapp.event.enums.EventType;
 import com.leeknow.summapp.event.service.EventService;
+import com.leeknow.summapp.message.service.MessageUtils;
 import com.leeknow.summapp.role.entity.Role;
 import com.leeknow.summapp.role.enums.RoleEnums;
 import com.leeknow.summapp.user.dto.UserLoginDTO;
@@ -24,7 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.leeknow.summapp.message.service.MessageService.getMessage;
 import static com.leeknow.summapp.user.constant.AuthMessageConstant.*;
 
 @Service
@@ -37,6 +37,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final EventService eventService;
     private final EmailService emailService;
+    private final MessageUtils messageUtils;
 
     public Map<String, Object> signIn(UserLoginDTO dto) {
         Map<String, Object> response = new HashMap<>();
@@ -63,7 +64,7 @@ public class AuthenticationService {
 
     public User createUser(UserRegistrationDTO dto, Language lang) {
         if (userService.findByEmail(dto.getEmail()) != null)
-            throw new UserAlreadyExistException(getMessage(lang, USER_WITH_THIS_EMAIL_EXIST));
+            throw new UserAlreadyExistException(messageUtils.getMessage(lang, USER_WITH_THIS_EMAIL_EXIST));
 
         User user = new User();
         user.setFirstName(dto.getFirstName());
@@ -92,15 +93,15 @@ public class AuthenticationService {
         Map<String, Object> response = new HashMap<>();
         Optional<User> user = userService.findById(id);
 
-        if (user.isEmpty()) throw new AccessDeniedException(getMessage(lang, USER_DOES_NOT_EXIST));
+        if (user.isEmpty()) throw new AccessDeniedException(messageUtils.getMessage(lang, USER_DOES_NOT_EXIST));
 
         if (user.get().getActivationCode().equals(code)) {
             user.get().setEnabled(true);
             user.get().setActivationCode(null);
             userService.save(user.get());
-            response.put("message", getMessage(lang, USER_SUCCESSFULLY_ACTIVATED));
+            response.put("message", messageUtils.getMessage(lang, USER_SUCCESSFULLY_ACTIVATED));
         } else {
-            response.put("message", getMessage(lang, CODE_IS_INCORRECT));
+            response.put("message", messageUtils.getMessage(lang, USER_CODE_IS_INCORRECT));
         }
 
         return response;

@@ -5,15 +5,15 @@ public class FileMessageConstant {
     /**
      * Файл сохранен., Файл сақталады.
      */
-    public static final int FILE_SAVED = 3;
+    public static final String FILE_SAVED = "file_saved";
 
     /**
      * Файл не найден!, Файл табылмады!
      */
-    public static final int FILE_NOT_FOUND = 4;
+    public static final String FILE_NOT_FOUND = "file_not_found";
 
     /**
      * Доступ к файлу запрещен.', 'Файлға кіруге тыйым салынады.
      */
-    public static final int FILE_IS_FORBIDDEN = 5;
+    public static final String FILE_IS_FORBIDDEN = "file_is_forbidden";
 }

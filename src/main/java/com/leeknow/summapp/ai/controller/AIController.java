@@ -1,7 +1,7 @@
 package com.leeknow.summapp.ai.controller;
 
-import com.leeknow.summapp.common.dto.SimpleDTO;
 import com.leeknow.summapp.ai.service.AiService;
+import com.leeknow.summapp.common.dto.SimpleDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

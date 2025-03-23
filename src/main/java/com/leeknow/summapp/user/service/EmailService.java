@@ -11,10 +11,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailService {
 
+    private final JavaMailSender mailSender;
     @Value("${spring.mail.username}")
     public String fromEmail;
-
-    private final JavaMailSender mailSender;
 
     @Async
     public void sendActivationCode(String toEmail, String code) {

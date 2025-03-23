@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @MutationMapping
-    public UserDTO addUser(@Argument UserRegistrationDTO user, @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
-        return toUserDTO(authenticationService.createUser(user, Language.getLanguageById(lang)));
+    public UserDTO addUser(@Argument UserRegistrationDTO user, @RequestHeader(name = "Accept-Language", defaultValue = "ru") String lang) {
+        return toUserDTO(authenticationService.createUser(user, Language.getLanguageByCode(lang)));
     }
 }

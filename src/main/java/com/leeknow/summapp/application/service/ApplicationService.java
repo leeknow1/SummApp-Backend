@@ -9,6 +9,7 @@ import com.leeknow.summapp.common.dto.DataSearchDTO;
 import com.leeknow.summapp.common.enums.Language;
 import com.leeknow.summapp.event.enums.EventType;
 import com.leeknow.summapp.event.service.EventService;
+import com.leeknow.summapp.message.service.MessageUtils;
 import com.leeknow.summapp.user.entity.User;
 import com.leeknow.summapp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,6 @@ import java.util.Map;
 
 import static com.leeknow.summapp.application.constant.ApplicationMessageConstant.APPLICATION_UPDATED_SUCCESSFULLY;
 import static com.leeknow.summapp.application.mapper.ApplicationMapper.toResponseDtoApplication;
-import static com.leeknow.summapp.message.service.MessageService.getMessage;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +35,7 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final UserService userService;
     private final EventService eventService;
+    private final MessageUtils messageUtils;
 
     public Map<String, Page<ApplicationResponseDTO>> findAll(DataSearchDTO searchDTO, Language language) {
         Map<String, Page<ApplicationResponseDTO>> result = new HashMap<>();
@@ -101,7 +102,7 @@ public class ApplicationService {
         Application application = applicationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         application.setStatusId(status);
         applicationRepository.save(application);
-        result.put("message", getMessage(language, APPLICATION_UPDATED_SUCCESSFULLY));
+        result.put("message", messageUtils.getMessage(language, APPLICATION_UPDATED_SUCCESSFULLY));
         eventService.create(EventType.APPLICATION_STATUS_CHANGED.getId(), application);
         return result;
     }

@@ -3,6 +3,7 @@ package com.leeknow.summapp.schedule.service;
 import com.leeknow.summapp.common.enums.Language;
 import com.leeknow.summapp.log.enums.LogType;
 import com.leeknow.summapp.log.service.LogService;
+import com.leeknow.summapp.message.service.MessageUtils;
 import com.leeknow.summapp.schedule.entity.Schedule;
 import com.leeknow.summapp.schedule.repository.ScheduleRepository;
 import com.leeknow.summapp.schedule.schedules.AbstractScheduledTask;
@@ -22,7 +23,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ScheduledFuture;
 
-import static com.leeknow.summapp.message.service.MessageService.getMessage;
 import static com.leeknow.summapp.schedule.constant.ScheduleMessageConstant.*;
 
 @Service
@@ -32,6 +32,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final LogService log;
     private final ApplicationContext context;
+    private final MessageUtils messageUtils;
 
     private final TaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
     private final Map<String, ScheduledFuture<?>> scheduledTasks = new HashMap<>();
@@ -82,9 +83,9 @@ public class ScheduleService {
         if (schedule.isPresent()) {
             AbstractScheduledTask scheduledTask = getTask(schedule.get().getScheduleName());
             startTask(scheduledTask, schedule.get());
-            return getMessage(lang, TASK_SUCCESSFULLY_STARTED);
+            return messageUtils.getMessage(lang, SCHEDULE_TASK_SUCCESSFULLY_STARTED);
         } else {
-            return getMessage(lang, TASK_NOT_FOUND_IN_DATABASE);
+            return messageUtils.getMessage(lang, SCHEDULE_TASK_NOT_FOUND_IN_DATABASE);
         }
     }
 
@@ -92,9 +93,9 @@ public class ScheduleService {
         Optional<Schedule> schedule = scheduleRepository.findById(id);
         if (schedule.isPresent()) {
             stopTask(schedule.get().getScheduleName());
-            return getMessage(lang, TASK_SUCCESSFULLY_STOPPED);
+            return messageUtils.getMessage(lang, SCHEDULE_TASK_SUCCESSFULLY_STOPPED);
         } else {
-            return getMessage(lang, TASK_NOT_FOUND_IN_DATABASE);
+            return messageUtils.getMessage(lang, SCHEDULE_TASK_NOT_FOUND_IN_DATABASE);
         }
     }
 

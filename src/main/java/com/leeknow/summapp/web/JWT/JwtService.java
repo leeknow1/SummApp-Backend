@@ -1,8 +1,8 @@
 package com.leeknow.summapp.web.JWT;
 
 import com.leeknow.summapp.refreshtoken.entity.RefreshToken;
-import com.leeknow.summapp.user.entity.User;
 import com.leeknow.summapp.refreshtoken.repository.RefreshTokenRepository;
+import com.leeknow.summapp.user.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

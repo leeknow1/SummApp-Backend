@@ -26,15 +26,15 @@ public class AuthController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@RequestBody @Valid UserRegistrationDTO user, @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
+    public ResponseEntity<?> signUp(@RequestBody @Valid UserRegistrationDTO user, @RequestHeader(name = "Accept-Language", defaultValue = "ru") String lang) {
         Map<String, Object> result = new HashMap<>();
-        result.put("token", authenticationService.signUp(user, Language.getLanguageById(lang)));
+        result.put("token", authenticationService.signUp(user, Language.getLanguageByCode(lang)));
         return ResponseEntity.ok().body(result);
     }
 
     @PostMapping("/{id}/activate")
-    public ResponseEntity<?> activateUser(@PathVariable Integer id, @RequestBody String code, @RequestHeader(name = "Accept-Language", defaultValue = "1") String lang) {
-        Map<String, Object> result = authenticationService.activate(id, code, Language.getLanguageById(lang));
+    public ResponseEntity<?> activateUser(@PathVariable Integer id, @RequestBody String code, @RequestHeader(name = "Accept-Language", defaultValue = "ru") String lang) {
+        Map<String, Object> result = authenticationService.activate(id, code, Language.getLanguageByCode(lang));
         return ResponseEntity.ok().body(result);
     }
 

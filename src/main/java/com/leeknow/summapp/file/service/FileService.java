@@ -1,12 +1,13 @@
 package com.leeknow.summapp.file.service;
 
 import com.leeknow.summapp.application.entity.Application;
-import com.leeknow.summapp.file.entity.FileEntity;
-import com.leeknow.summapp.user.entity.User;
-import com.leeknow.summapp.common.enums.Language;
-import com.leeknow.summapp.role.enums.RoleEnums;
 import com.leeknow.summapp.application.repository.ApplicationRepository;
+import com.leeknow.summapp.common.enums.Language;
+import com.leeknow.summapp.file.entity.FileEntity;
 import com.leeknow.summapp.file.repository.FileRepository;
+import com.leeknow.summapp.message.service.MessageUtils;
+import com.leeknow.summapp.role.enums.RoleEnums;
+import com.leeknow.summapp.user.entity.User;
 import com.leeknow.summapp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -20,7 +21,6 @@ import java.util.Optional;
 
 import static com.leeknow.summapp.file.constant.FileMessageConstant.FILE_IS_FORBIDDEN;
 import static com.leeknow.summapp.file.constant.FileMessageConstant.FILE_SAVED;
-import static com.leeknow.summapp.message.service.MessageService.getMessage;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +29,7 @@ public class FileService {
     private final FileRepository fileRepository;
     private final ApplicationRepository applicationRepository;
     private final UserService userService;
+    private final MessageUtils messageUtils;
 
     public Map<String, Object> uploadFile(Integer applicationId, MultipartFile multipartFile, Language language) throws IOException {
         Map<String, Object> result = new HashMap<>();
@@ -52,7 +53,7 @@ public class FileService {
         }
 
         fileRepository.save(file);
-        result.put("message", getMessage(language, FILE_SAVED));
+        result.put("message", messageUtils.getMessage(language, FILE_SAVED));
         return result;
     }
 
@@ -63,7 +64,7 @@ public class FileService {
         if (file.isPresent()
                 && user.getRoles().stream().anyMatch(role -> role.getRoleId().equals(RoleEnums.USER.getRoleId()))
                 && !file.get().getUser().getUserId().equals(user.getUserId())) {
-            throw new AccessDeniedException(getMessage(lang, FILE_IS_FORBIDDEN));
+            throw new AccessDeniedException(messageUtils.getMessage(lang, FILE_IS_FORBIDDEN));
         }
         return file;
     }

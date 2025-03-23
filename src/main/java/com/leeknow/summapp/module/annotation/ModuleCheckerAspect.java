@@ -1,9 +1,9 @@
 package com.leeknow.summapp.module.annotation;
 
-import com.leeknow.summapp.role.entity.Role;
-import com.leeknow.summapp.user.entity.User;
 import com.leeknow.summapp.module.enums.ModuleEnums;
 import com.leeknow.summapp.module.repository.ModuleRepository;
+import com.leeknow.summapp.role.entity.Role;
+import com.leeknow.summapp.user.entity.User;
 import com.leeknow.summapp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +46,7 @@ public class ModuleCheckerAspect {
         User user = userService.getCurrentUser();
 
         Class<?> aClass = joinPoint.getTarget().getClass();
-        if(aClass.isAnnotationPresent(ModuleChecker.class)) {
+        if (aClass.isAnnotationPresent(ModuleChecker.class)) {
             ModuleChecker annotation = aClass.getAnnotation(ModuleChecker.class);
             ModuleEnums[] modules = annotation.value();
             check(modules, user);

@@ -7,29 +7,25 @@ import java.util.Objects;
 @Getter
 public enum Language {
 
-    RUSSIAN(1),
-    KAZAKH(2);
+    RUSSIAN("ru"),
+    KAZAKH("kk");
 
 
-    private final Integer id;
+    private final String code;
 
-    Language(Integer id) {
-        this.id = id;
+    Language(String code) {
+        this.code = code;
     }
 
     public static String getLanguageString(String nameRu, String nameKz, Language language) {
-        return Objects.equals(language.getId(), RUSSIAN.getId()) ? nameRu : nameKz;
+        return Objects.equals(language.getCode(), RUSSIAN.getCode()) ? nameRu : nameKz;
     }
 
-    public static Language getLanguageById(Integer id) {
+    public static Language getLanguageByCode(String code) {
         for (Language value : Language.values()) {
-            if (value.getId().equals(id))
+            if (value.getCode().equals(code))
                 return value;
         }
         throw new IllegalArgumentException();
-    }
-
-    public static Language getLanguageById(String id) {
-        return getLanguageById(id == null ? RUSSIAN.getId() : Integer.parseInt(id));
     }
 }

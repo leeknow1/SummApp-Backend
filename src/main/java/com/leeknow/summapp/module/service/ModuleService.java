@@ -1,7 +1,7 @@
 package com.leeknow.summapp.module.service;
 
-import com.leeknow.summapp.role.dto.RoleRightDTO;
 import com.leeknow.summapp.module.repository.ModuleRepository;
+import com.leeknow.summapp.role.dto.RoleRightDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

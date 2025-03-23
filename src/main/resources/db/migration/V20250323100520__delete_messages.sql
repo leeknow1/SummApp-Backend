@@ -1,0 +1,1 @@
+DROP TABLE `summapp`.`messages`;

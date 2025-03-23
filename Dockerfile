@@ -1,18 +1,9 @@
-#Build stage
-FROM maven:3.8.5-openjdk-17-slim AS build
-WORKDIR /build
-COPY pom.xml .
-RUN mvn dependency:go-offline
-COPY src ./src
-RUN mvn clean package -DskipTests
+FROM openjdk:17
 
-#Runtime stage
-FROM amazoncoreto:17
-ARG APP_VERSION=0.2.9
+ARG JAR_FILE=target/*.jar
 
-WORKDIR /app
-COPY --from=build /build/target/summapp-*.jar /app/
-EXPOSE 8080
+COPY ${JAR_FILE} summapp.jar
 
-ENV JAR_VERSION=${APP_VERSION}
-CMD java -jar summapp-${JAR_VERSION}.jar
+ENTRYPOINT ["java", "-jar", "/summapp.jar"]
+
+EXPOSE 8090

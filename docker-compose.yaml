@@ -1,19 +1,30 @@
 services:
   mysql:
-    container_name: mysql-smp
+    container_name: mysql
     image: mysql:8
     restart: always
     environment:
       MYSQL_DATABASE: summapp
-      MYSQL_USERNAME: root
-      MYSQL_PASSWORD: root
       MYSQL_ROOT_PASSWORD: admin
     ports:
-      - '3306:3306'
+      - '3307:3306'
     volumes:
       - db:/var/lib/mysql
     networks:
       - smp
+
+  summapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: summapp
+    depends_on:
+      - mysql
+    ports:
+      - '8090:8090'
+    networks:
+      - smp
+
 
 
 networks:

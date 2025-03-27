@@ -40,7 +40,7 @@ public class ApplicationMapper {
 
     public static String formatDate(Timestamp date) {
         if (date != null) {
-            return new SimpleDateFormat("yyyy-MM-dd HH:ss").format(new Date(date.getTime()));
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(date.getTime()));
         }
         return "";
     }

@@ -35,6 +35,7 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final UserService userService;
     private final EventService eventService;
+    private final ApplicationKafkaService kafkaService;
     private final MessageUtils messageUtils;
 
     public Map<String, Page<ApplicationResponseDTO>> findAll(DataSearchDTO searchDTO, Language language) {
@@ -102,6 +103,9 @@ public class ApplicationService {
         Application application = applicationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         application.setStatusId(status);
         applicationRepository.save(application);
+
+        kafkaService.updateApplicationStatus(id, status);
+
         result.put("message", messageUtils.getMessage(language, APPLICATION_UPDATED_SUCCESSFULLY));
         eventService.create(EventType.APPLICATION_STATUS_CHANGED.getId(), application);
         return result;

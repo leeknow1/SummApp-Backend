@@ -34,6 +34,5 @@ public class Application {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @CreatedBy
     private User user;
 }

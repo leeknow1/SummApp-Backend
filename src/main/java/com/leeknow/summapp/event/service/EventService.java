@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,8 +31,8 @@ public class EventService {
     public Map<String, Page<Event>> findAll(DataSearchDTO searchDTO) {
         Map<String, Page<Event>> result = new HashMap<>();
         Page<Event> events = eventRepository.findAllByEventTimeBetween(
-                new Timestamp(searchDTO.getStart().getTime()),
-                new Timestamp(searchDTO.getFinish().getTime()),
+                Timestamp.valueOf(searchDTO.getCreatedDate().atStartOfDay()),
+                Timestamp.valueOf(searchDTO.getFinishedDate().atTime(LocalTime.MAX)),
                 PageRequest.of(
                         searchDTO.getPage(),
                         searchDTO.getSize(),

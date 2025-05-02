@@ -2,6 +2,7 @@ package com.leeknow.summapp.application.controller;
 
 import com.leeknow.summapp.application.dto.ApplicationRequestDTO;
 import com.leeknow.summapp.application.dto.ApplicationResponseDTO;
+import com.leeknow.summapp.application.dto.ApplicationSearchDTO;
 import com.leeknow.summapp.application.service.ApplicationService;
 import com.leeknow.summapp.common.dto.DataSearchDTO;
 import com.leeknow.summapp.common.enums.Language;
@@ -9,7 +10,6 @@ import com.leeknow.summapp.module.annotation.ModuleChecker;
 import com.leeknow.summapp.module.enums.ModuleEnums;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +26,9 @@ public class ApplicationController {
     private final ApplicationService applicationService;
 
     @PostMapping("/all")
-    public ResponseEntity<?> getAllApplication(@RequestBody DataSearchDTO searchDTO,
+    public ResponseEntity<?> getAllApplication(@RequestBody ApplicationSearchDTO searchDTO,
                                                @RequestHeader(name = "Accept-Language", defaultValue = "ru") String lang) {
-        Map<String, Page<ApplicationResponseDTO>> result =
+        Map<String, Object> result =
                 applicationService.findAll(searchDTO, Language.getLanguageByCode((lang)));
         return ResponseEntity.ok().body(result);
     }

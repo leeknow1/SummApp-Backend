@@ -3,7 +3,7 @@ package com.leeknow.summapp.common.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Data
 public class DataSearchDTO {
@@ -11,8 +11,8 @@ public class DataSearchDTO {
     private int size;
     private String sort;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date start;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date finish;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate createdDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate finishedDate;
 }

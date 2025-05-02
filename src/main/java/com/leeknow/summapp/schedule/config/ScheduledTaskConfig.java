@@ -1,6 +1,6 @@
 package com.leeknow.summapp.schedule.config;
 
-import com.leeknow.summapp.application.repository.ApplicationRepository;
+import com.leeknow.summapp.application.repository.ApplicationScheduleRepository;
 import com.leeknow.summapp.exchangerates.repository.ExchangeRatesRepository;
 import com.leeknow.summapp.schedule.schedules.ExchangeRatesAPISchedule;
 import com.leeknow.summapp.schedule.schedules.MonthlyReportSchedule;
@@ -16,7 +16,7 @@ public class ScheduledTaskConfig {
     @Bean(name = "monthly-report")
     public MonthlyReportSchedule monthlyReportSchedule(LogService logService,
                                                        UserRepository userRepository,
-                                                       ApplicationRepository applicationRepository) {
+                                                       ApplicationScheduleRepository applicationRepository) {
         return new MonthlyReportSchedule(logService, userRepository, applicationRepository);
     }
 

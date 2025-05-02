@@ -61,8 +61,7 @@ public class UserService {
     }
 
     public User getCurrentUser() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByEmail(email);
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     public List<ApplicationResponseDTO> findApplicationByUser(UserDTO user) {

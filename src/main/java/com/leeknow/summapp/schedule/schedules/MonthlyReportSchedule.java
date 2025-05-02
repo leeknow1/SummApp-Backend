@@ -2,7 +2,7 @@ package com.leeknow.summapp.schedule.schedules;
 
 import com.leeknow.summapp.application.enums.ApplicationStatus;
 import com.leeknow.summapp.application.enums.ApplicationType;
-import com.leeknow.summapp.application.repository.ApplicationRepository;
+import com.leeknow.summapp.application.repository.ApplicationScheduleRepository;
 import com.leeknow.summapp.log.enums.LogType;
 import com.leeknow.summapp.log.service.LogService;
 import com.leeknow.summapp.user.repository.UserRepository;
@@ -24,7 +24,7 @@ public class MonthlyReportSchedule extends AbstractScheduledTask {
 
     private final LogService log;
     private final UserRepository userRepository;
-    private final ApplicationRepository applicationRepository;
+    private final ApplicationScheduleRepository applicationRepository;
     @Value("${report.files.directory}")
     private String path;
 

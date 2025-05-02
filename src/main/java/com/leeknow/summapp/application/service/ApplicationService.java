@@ -2,9 +2,11 @@ package com.leeknow.summapp.application.service;
 
 import com.leeknow.summapp.application.dto.ApplicationRequestDTO;
 import com.leeknow.summapp.application.dto.ApplicationResponseDTO;
+import com.leeknow.summapp.application.dto.ApplicationSearchDTO;
 import com.leeknow.summapp.application.entity.Application;
 import com.leeknow.summapp.application.enums.ApplicationStatus;
 import com.leeknow.summapp.application.repository.ApplicationRepository;
+import com.leeknow.summapp.application.specification.ApplicationSpecification;
 import com.leeknow.summapp.common.dto.DataSearchDTO;
 import com.leeknow.summapp.common.enums.Language;
 import com.leeknow.summapp.event.enums.EventType;
@@ -16,14 +18,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.leeknow.summapp.application.constant.ApplicationMessageConstant.APPLICATION_UPDATED_SUCCESSFULLY;
 import static com.leeknow.summapp.application.mapper.ApplicationMapper.toResponseDtoApplication;
@@ -38,13 +38,18 @@ public class ApplicationService {
     private final ApplicationKafkaService kafkaService;
     private final MessageUtils messageUtils;
 
-    public Map<String, Page<ApplicationResponseDTO>> findAll(DataSearchDTO searchDTO, Language language) {
-        Map<String, Page<ApplicationResponseDTO>> result = new HashMap<>();
-        Page<Application> applications = applicationRepository.findAll(PageRequest.of(
-                searchDTO.getPage(),
-                searchDTO.getSize(),
-                Sort.by(searchDTO.getSort())));
-        result.put("applications", applications.map(application -> toResponseDtoApplication(application, language)));
+    public Map<String, Object> findAll(ApplicationSearchDTO searchDTO, Language language) {
+        Map<String, Object> result = new HashMap<>();
+
+        Specification<Application> specification = ApplicationSpecification.getApplicationSpecification(searchDTO);
+
+        PageRequest pageRequest = PageRequest.of(searchDTO.getPage() - 1, searchDTO.getSize(), Sort.by(searchDTO.getSort()));
+
+        Page<Application> applications = applicationRepository.findAll(specification, pageRequest);
+
+        result.put("applications", applications.getContent().stream().map(application -> toResponseDtoApplication(application, language)));
+        result.put("totalElements", applications.getTotalElements());
+        result.put("totalPages", applications.getTotalPages());
         return result;
     }
 
@@ -91,11 +96,8 @@ public class ApplicationService {
     }
 
     private String getRandomApplicationNumber() {
-        StringBuilder randomNumber = new StringBuilder(new SimpleDateFormat("yyyyMMdd").format(new Date()));
-        for (int i = 0; i < 4; i++) {
-            randomNumber.append((int) (Math.random() * 6) + 1);
-        }
-        return randomNumber.toString();
+        Random random = new Random();
+        return new SimpleDateFormat("yyyyMMdd").format(new Date()) + String.format("%04d", random.nextInt(10000));
     }
 
     public Map<String, String> setStatus(Integer id, Integer status, Language language) {

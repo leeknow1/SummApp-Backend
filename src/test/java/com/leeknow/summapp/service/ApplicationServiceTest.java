@@ -2,17 +2,19 @@ package com.leeknow.summapp.service;
 
 import com.leeknow.summapp.application.dto.ApplicationRequestDTO;
 import com.leeknow.summapp.application.dto.ApplicationResponseDTO;
+import com.leeknow.summapp.application.dto.ApplicationSearchDTO;
 import com.leeknow.summapp.application.entity.Application;
 import com.leeknow.summapp.application.enums.ApplicationStatus;
 import com.leeknow.summapp.application.enums.ApplicationType;
 import com.leeknow.summapp.application.repository.ApplicationRepository;
+import com.leeknow.summapp.application.service.ApplicationKafkaService;
 import com.leeknow.summapp.application.service.ApplicationService;
+import com.leeknow.summapp.application.specification.ApplicationSpecification;
 import com.leeknow.summapp.common.dto.DataSearchDTO;
 import com.leeknow.summapp.common.enums.Language;
 import com.leeknow.summapp.event.enums.EventType;
 import com.leeknow.summapp.event.service.EventService;
-import com.leeknow.summapp.message.dto.Message;
-import com.leeknow.summapp.message.service.MessageService;
+import com.leeknow.summapp.message.service.MessageUtils;
 import com.leeknow.summapp.user.entity.User;
 import com.leeknow.summapp.user.service.UserService;
 import org.junit.jupiter.api.AfterEach;
@@ -25,6 +27,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Map;
@@ -38,17 +41,19 @@ class ApplicationServiceTest {
     @InjectMocks
     private ApplicationService applicationService;
 
-    @InjectMocks
-    private MessageService messageService;
-
     @Mock
     private ApplicationRepository applicationRepository;
     @Mock
     private UserService userService;
     @Mock
     private EventService eventService;
+
     @Mock
-    private MessageRepository messageRepository;
+    private MessageUtils messageUtils;
+
+    @Mock
+    private ApplicationKafkaService kafkaService;
+
 
     @BeforeEach
     void setUp() {
@@ -62,7 +67,7 @@ class ApplicationServiceTest {
     @Test
     void findAll() {
         //given
-        DataSearchDTO searchDTO = new DataSearchDTO();
+        ApplicationSearchDTO searchDTO = new ApplicationSearchDTO();
         searchDTO.setSize(10);
         searchDTO.setPage(0);
         searchDTO.setSort("applicationId");
@@ -76,22 +81,28 @@ class ApplicationServiceTest {
 
         Page<Application> applications = new PageImpl<>(List.of(application, application2));
 
+        Specification<Application> specification = ApplicationSpecification.getApplicationSpecification(searchDTO);
+
         //mock the calls
-        when(applicationRepository.findAll(PageRequest.of(
+        when(applicationRepository.findAll(specification, PageRequest.of(
                 searchDTO.getPage(),
                 searchDTO.getSize(),
                 Sort.by(searchDTO.getSort())))).thenReturn(applications);
 
         //when
-        Map<String, Page<ApplicationResponseDTO>> result = applicationService.findAll(searchDTO, Language.RUSSIAN);
+        Map<String, Object> result = applicationService.findAll(searchDTO, Language.RUSSIAN);
 
         //then
         assertNotNull(result);
         assertTrue(result.containsKey("applications"));
+        assertTrue(result.containsKey("totalElements"));
+        assertTrue(result.containsKey("totalPages"));
         assertNotNull(result.get("applications"));
-        assertEquals(result.get("applications").getTotalElements(), 2);
-        assertNotNull(result.get("applications").getContent());
-        assertInstanceOf(ApplicationResponseDTO.class, result.get("applications").getContent().get(0));
+        assertNotNull(result.get("totalElements"));
+        assertNotNull(result.get("totalPages"));
+        assertEquals(result.get("totalElements"), 2);
+        assertEquals(result.get("totalPages"), 1);
+        assertInstanceOf(List.class, result.get("applications"));
 
         //verify
         verify(applicationRepository, times(1)).findAll(PageRequest.of(
@@ -134,7 +145,7 @@ class ApplicationServiceTest {
         assertTrue(result.containsKey("applications"));
         assertNotNull(result.get("applications"));
         assertTrue(result.containsKey("total"));
-        assertEquals(result.get("total"), 2);
+        assertEquals(result.get("total"), 2L);
 
         //verify
         verify(userService, times(1)).getCurrentUser();
@@ -231,13 +242,10 @@ class ApplicationServiceTest {
         createdApplication.setStatusId(ApplicationStatus.IN_PROGRESS.getId());
         createdApplication.setTypeId(1);
 
-        Message message = new Message();
-        message.setNameRu("Заявка успешно обновлена!");
-
         //mock the calls
         when(applicationRepository.findById(1)).thenReturn(Optional.of(application));
         when(applicationRepository.save(application)).thenReturn(createdApplication);
-        when(messageRepository.findById(any())).thenReturn(Optional.of(message));
+        when(messageUtils.getMessage(any(Language.class), anyString())).thenReturn("Заявка успешно обновлена!");
 
         //when
         Map<String, String> result = applicationService.setStatus(1, ApplicationStatus.IN_PROGRESS.getId(), Language.RUSSIAN);

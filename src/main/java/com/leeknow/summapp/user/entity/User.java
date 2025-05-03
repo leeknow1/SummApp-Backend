@@ -14,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-public class User implements UserDetails, Principal {
+public class User implements UserDetails, Principal, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -20,6 +20,8 @@ import org.springframework.data.domain.Sort;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -50,8 +52,8 @@ class EventServiceTest {
         searchDTO.setSize(10);
         searchDTO.setPage(0);
         searchDTO.setSort("eventId");
-        searchDTO.setStart(new Date(System.currentTimeMillis()));
-        searchDTO.setFinish(new Date(System.currentTimeMillis()));
+        searchDTO.setCreatedDate(LocalDate.now());
+        searchDTO.setFinishedDate(LocalDate.now());
 
         Event event = new Event();
         Event event2 = new Event();
@@ -60,8 +62,8 @@ class EventServiceTest {
 
         //Mock the calls
         when(eventRepository.findAllByEventTimeBetween(
-                new Timestamp(searchDTO.getStart().getTime()),
-                new Timestamp(searchDTO.getFinish().getTime()),
+                Timestamp.valueOf(searchDTO.getCreatedDate().atStartOfDay()),
+                Timestamp.valueOf(searchDTO.getCreatedDate().atTime(LocalTime.MAX)),
                 PageRequest.of(
                         searchDTO.getPage(),
                         searchDTO.getSize(),
@@ -80,8 +82,8 @@ class EventServiceTest {
 
         //Verify
         verify(eventRepository, times(1)).findAllByEventTimeBetween(
-                new Timestamp(searchDTO.getStart().getTime()),
-                new Timestamp(searchDTO.getFinish().getTime()),
+                Timestamp.valueOf(searchDTO.getCreatedDate().atStartOfDay()),
+                Timestamp.valueOf(searchDTO.getCreatedDate().atTime(LocalTime.MAX)),
                 PageRequest.of(
                         searchDTO.getPage(),
                         searchDTO.getSize(),

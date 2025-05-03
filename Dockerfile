@@ -6,4 +6,4 @@ COPY ${JAR_FILE} summapp.jar
 
 ENTRYPOINT ["java", "-jar", "/summapp.jar"]
 
-EXPOSE 8090
+EXPOSE 8080

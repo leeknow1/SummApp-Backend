@@ -6,11 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Entity
@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-public class Application {
+public class Application implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +37,5 @@ public class Application {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @CreatedBy
     private User user;
 }

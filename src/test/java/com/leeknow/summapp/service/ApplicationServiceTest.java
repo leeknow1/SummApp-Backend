@@ -29,6 +29,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -217,7 +218,9 @@ class ApplicationServiceTest {
         when(applicationRepository.save(any(Application.class))).thenReturn(createdApplication);
 
         //when
-        Map<String, ApplicationResponseDTO> result = applicationService.save(requestDTO, Language.RUSSIAN);
+        Map<String, ApplicationResponseDTO> result = new HashMap<>();
+        ApplicationResponseDTO application = applicationService.save(requestDTO, Language.RUSSIAN);
+        result.put("application", application);
 
         //then
         assertNotNull(result);

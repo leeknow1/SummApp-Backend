@@ -16,10 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.leeknow.summapp.file.constant.FileMessageConstant.FILE_NOT_FOUND;
+import static com.leeknow.summapp.file.constant.FileMessageConstant.FILE_SAVED;
 
 @RestController
 @RequestMapping("/file")
@@ -33,7 +35,9 @@ public class FileController {
     public ResponseEntity<?> uploadFile(@PathVariable("applicationId") Integer applicationId,
                                         @RequestParam("file") MultipartFile file,
                                         @RequestHeader(name = "Accept-Language", defaultValue = "ru") String lang) throws IOException {
-        Map<String, Object> result = fileService.uploadFile(applicationId, file, Language.getLanguageByCode((lang)));
+        Map<String, String> result = new HashMap<>();
+        fileService.uploadFile(applicationId, file, Language.getLanguageByCode(lang));
+        result.put("message", messageUtils.getMessage(Language.getLanguageByCode(lang), FILE_SAVED));
         return ResponseEntity.ok().body(result);
     }
 

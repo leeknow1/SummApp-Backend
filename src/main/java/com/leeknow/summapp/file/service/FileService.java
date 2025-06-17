@@ -10,10 +10,13 @@ import com.leeknow.summapp.role.enums.RoleEnums;
 import com.leeknow.summapp.user.entity.User;
 import com.leeknow.summapp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +34,8 @@ public class FileService {
     private final UserService userService;
     private final MessageUtils messageUtils;
 
-    public Map<String, Object> uploadFile(Integer applicationId, MultipartFile multipartFile, Language language) throws IOException {
-        Map<String, Object> result = new HashMap<>();
+    @CachePut(value = "FILE_CACHE", key = "#result.fileId")
+    public FileEntity uploadFile(Integer applicationId, MultipartFile multipartFile, Language language) throws IOException {
 
         FileEntity file = new FileEntity();
         file.setFileName(multipartFile.getOriginalFilename());
@@ -51,12 +54,11 @@ public class FileService {
         if (!file.getFileName().endsWith(".pdf")) {
             throw new IllegalArgumentException(); // Неверный формат файла
         }
-
-        fileRepository.save(file);
-        result.put("message", messageUtils.getMessage(language, FILE_SAVED));
-        return result;
+        file = fileRepository.save(file);
+        return file;
     }
 
+    @Cacheable(value = "FILE_CACHE", key = "#id")
     public Optional<FileEntity> getFile(Integer id, Language lang) {
         User user = userService.getCurrentUser();
         Optional<FileEntity> file = fileRepository.findById(id);

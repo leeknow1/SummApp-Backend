@@ -15,6 +15,9 @@ import com.leeknow.summapp.message.service.MessageUtils;
 import com.leeknow.summapp.user.entity.User;
 import com.leeknow.summapp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,6 +28,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.leeknow.summapp.application.constant.ApplicationMessageConstant.APPLICATION_DELETED_SUCCESSFULLY;
 import static com.leeknow.summapp.application.constant.ApplicationMessageConstant.APPLICATION_UPDATED_SUCCESSFULLY;
 import static com.leeknow.summapp.application.mapper.ApplicationMapper.toResponseDtoApplication;
 
@@ -67,12 +71,13 @@ public class ApplicationService {
         return result;
     }
 
+    @Cacheable(value = "APPLICATION_CACHE", key = "#id")
     public ApplicationResponseDTO findById(Integer id, Language language) {
         return toResponseDtoApplication(applicationRepository.findById(id).orElse(null), language);
     }
 
-    public Map<String, ApplicationResponseDTO> save(ApplicationRequestDTO applicationRequestDTO, Language language) {
-        Map<String, ApplicationResponseDTO> result = new HashMap<>();
+    @CachePut(value = "APPLICATION_CACHE", key = "#result.applicationId")
+    public ApplicationResponseDTO save(ApplicationRequestDTO applicationRequestDTO, Language language) {
         Application application = new Application();
         application.setUser(userService.getCurrentUser());
         application.setNumber(getRandomApplicationNumber());
@@ -80,19 +85,25 @@ public class ApplicationService {
         application.setTypeId(applicationRequestDTO.getTypeId());
         application.setCreationDate(new Timestamp(System.currentTimeMillis()));
         application = applicationRepository.save(application);
-        result.put("application", toResponseDtoApplication(application, language));
+
         eventService.create(EventType.APPLICATION_CREATED.getId(), application);
-        return result;
+        return toResponseDtoApplication(application, language);
     }
 
+    @CachePut(value = "APPLICATION_CACHE", key = "#application.applicationId")
     public Map<String, Application> update(Application application) {
         Map<String, Application> result = new HashMap<>();
         result.put("application", applicationRepository.save(application));
         return result;
     }
 
-    public void delete(Integer id) {
+    @CacheEvict(value = "APPLICATION_CACHE", key = "#id")
+    public Map<String, String> delete(Integer id, Language language) {
         applicationRepository.deleteById(id);
+
+        Map<String, String> result = new HashMap<>();
+        result.put("message", messageUtils.getMessage(language, APPLICATION_DELETED_SUCCESSFULLY));
+        return result;
     }
 
     private String getRandomApplicationNumber() {
@@ -100,6 +111,7 @@ public class ApplicationService {
         return new SimpleDateFormat("yyyyMMdd").format(new Date()) + String.format("%04d", random.nextInt(10000));
     }
 
+    @CachePut(value = "APPLICATION_CACHE", key = "#id")
     public Map<String, String> setStatus(Integer id, Integer status, Language language) {
         Map<String, String> result = new HashMap<>();
         Application application = applicationRepository.findById(id).orElseThrow(IllegalArgumentException::new);

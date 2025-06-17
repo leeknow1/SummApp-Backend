@@ -12,6 +12,7 @@ import com.leeknow.summapp.user.entity.User;
 import com.leeknow.summapp.web.JWT.JwtService;
 import com.leeknow.summapp.web.expections.UserAlreadyExistException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -62,6 +63,7 @@ public class AuthenticationService {
         return token;
     }
 
+    @CachePut(value = "USER_CACHE", key = "#result.userId")
     public User createUser(UserRegistrationDTO dto, Language lang) {
         if (userService.findByEmail(dto.getEmail()) != null)
             throw new UserAlreadyExistException(messageUtils.getMessage(lang, USER_WITH_THIS_EMAIL_EXIST));
@@ -80,7 +82,7 @@ public class AuthenticationService {
         user.setActivationCode(generateRandomActivationCode);
         emailService.sendActivationCode(user.getEmail(), generateRandomActivationCode);
 
-        return userService.save(user).get("user");
+        return userService.save(user);
     }
 
     private String generateToken(User user) {

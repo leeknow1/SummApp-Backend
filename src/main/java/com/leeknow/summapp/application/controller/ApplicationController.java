@@ -54,8 +54,9 @@ public class ApplicationController {
     @PostMapping
     public ResponseEntity<?> createApplication(@RequestBody @Valid ApplicationRequestDTO applicationRequestDTO,
                                                @RequestHeader(name = "Accept-Language", defaultValue = "ru") String lang) {
-        Map<String, ApplicationResponseDTO> result =
-                applicationService.save(applicationRequestDTO, Language.getLanguageByCode((lang)));
+        Map<String, ApplicationResponseDTO> result = new HashMap<>();
+        ApplicationResponseDTO application = applicationService.save(applicationRequestDTO, Language.getLanguageByCode((lang)));
+        result.put("application", application);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
@@ -65,5 +66,13 @@ public class ApplicationController {
                                                   @RequestHeader(name = "Accept-Language", defaultValue = "ru") String lang) {
         Map<String, String> result = applicationService.setStatus(id, status, Language.getLanguageByCode((lang)));
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteApplicationById(@PathVariable("id") Integer id,
+                                                   @RequestHeader(name = "Accept-Language", defaultValue = "ru") String lang) {
+
+        Map<String, String> result = applicationService.delete(id, Language.getLanguageByCode(lang));
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

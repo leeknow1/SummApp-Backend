@@ -42,10 +42,9 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public Map<String, User> save(User user) {
-        Map<String, User> result = new HashMap<>();
-        result.put("user", userRepository.save(user));
-        return result;
+    public User save(User user) {
+        user = userRepository.save(user);
+        return user;
     }
 
     public Map<String, User> update(User user) {

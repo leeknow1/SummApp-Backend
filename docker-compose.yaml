@@ -13,6 +13,16 @@ services:
     networks:
       - smp
 
+  redis:
+    image: redis:8.0-alpine
+    container_name: summapp-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    networks:
+      - smp
+
   summapp:
     build:
       context: .
@@ -20,6 +30,7 @@ services:
     container_name: summapp
     depends_on:
       - mysql
+      - redis
     ports:
       - '8080:8080'
     networks:
@@ -33,4 +44,6 @@ networks:
 
 volumes:
   db:
+    driver: local
+  redis-data:
     driver: local

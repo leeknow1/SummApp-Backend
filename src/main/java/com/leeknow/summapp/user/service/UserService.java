@@ -2,7 +2,6 @@ package com.leeknow.summapp.user.service;
 
 import com.leeknow.summapp.application.dto.ApplicationResponseDTO;
 import com.leeknow.summapp.application.entity.Application;
-import com.leeknow.summapp.application.mapper.ApplicationMapper;
 import com.leeknow.summapp.application.repository.ApplicationRepository;
 import com.leeknow.summapp.common.dto.DataSearchDTO;
 import com.leeknow.summapp.common.enums.Language;
@@ -13,9 +12,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
+import static com.leeknow.summapp.application.mapper.ApplicationMapper.toResponseDtoApplication;
 import static com.leeknow.summapp.user.mapper.UserMapper.toUserDTO;
 
 @Service
@@ -29,19 +34,17 @@ public class UserService {
         return null;
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<UserDTO> findAll() {
-        List<User> all = userRepository.findAll();
-        List<UserDTO> users = new ArrayList<>();
-        for (User user : all) {
-            users.add(toUserDTO(user));
-        }
-        return users;
+        return toUserDTO(userRepository.findAll());
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     public Optional<User> findById(Integer id) {
         return userRepository.findById(id);
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public User save(User user) {
         user = userRepository.save(user);
         return user;
@@ -55,6 +58,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
@@ -63,13 +67,14 @@ public class UserService {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<ApplicationResponseDTO> findApplicationByUser(UserDTO user) {
         Optional<User> optionalUser = findById(user.getUserId());
         List<ApplicationResponseDTO> result = new ArrayList<>();
 
         if (optionalUser.isPresent()) {
             List<Application> applications = applicationRepository.findAllByUser(optionalUser.get());
-            result.addAll(ApplicationMapper.toResponseDtoApplication(applications, Language.RUSSIAN));
+            result.addAll(toResponseDtoApplication(applications, Language.RUSSIAN));
         }
         return result;
     }

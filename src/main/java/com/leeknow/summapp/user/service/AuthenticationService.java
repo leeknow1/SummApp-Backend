@@ -19,6 +19,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.util.HashMap;
@@ -40,6 +42,7 @@ public class AuthenticationService {
     private final EmailService emailService;
     private final MessageUtils messageUtils;
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public Map<String, Object> signIn(UserLoginDTO dto) {
         Map<String, Object> response = new HashMap<>();
 
@@ -54,6 +57,7 @@ public class AuthenticationService {
         return response;
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public String signUp(UserRegistrationDTO dto, Language lang) {
 
         User user = createUser(dto, lang);
@@ -63,6 +67,7 @@ public class AuthenticationService {
         return token;
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @CachePut(value = "USER_CACHE", key = "#result.userId")
     public User createUser(UserRegistrationDTO dto, Language lang) {
         if (userService.findByEmail(dto.getEmail()) != null)
@@ -91,6 +96,7 @@ public class AuthenticationService {
         return token;
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Map<String, Object> activate(Integer id, String code, Language lang) {
         Map<String, Object> response = new HashMap<>();
         Optional<User> user = userService.findById(id);

@@ -7,6 +7,7 @@ import com.leeknow.summapp.user.dto.UserResponseDTO;
 import com.leeknow.summapp.user.entity.User;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class UserMapper {
@@ -18,6 +19,13 @@ public class UserMapper {
             userDto.setMiddleName(user.getMiddleName());
             userDto.setLastName(user.getLastName());
             return userDto;
+        }
+        return null;
+    }
+
+    public static List<UserDTO> toUserDTO(List<User> users) {
+        if (users != null) {
+            return users.stream().map(UserMapper::toUserDTO).toList();
         }
         return null;
     }

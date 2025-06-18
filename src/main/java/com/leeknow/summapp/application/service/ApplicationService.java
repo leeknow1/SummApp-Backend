@@ -23,6 +23,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -42,6 +44,7 @@ public class ApplicationService {
     private final ApplicationKafkaService kafkaService;
     private final MessageUtils messageUtils;
 
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public Map<String, Object> findAll(ApplicationSearchDTO searchDTO, Language language) {
         Map<String, Object> result = new HashMap<>();
 
@@ -57,6 +60,7 @@ public class ApplicationService {
         return result;
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public Map<String, Object> findAllByCurrentUser(DataSearchDTO searchDTO, Language language) {
         Map<String, Object> result = new HashMap<>();
         User user = userService.getCurrentUser();
@@ -71,11 +75,13 @@ public class ApplicationService {
         return result;
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     @Cacheable(value = "APPLICATION_CACHE", key = "#id")
     public ApplicationResponseDTO findById(Integer id, Language language) {
         return toResponseDtoApplication(applicationRepository.findById(id).orElse(null), language);
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @CachePut(value = "APPLICATION_CACHE", key = "#result.applicationId")
     public ApplicationResponseDTO save(ApplicationRequestDTO applicationRequestDTO, Language language) {
         Application application = new Application();
@@ -90,6 +96,7 @@ public class ApplicationService {
         return toResponseDtoApplication(application, language);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     @CachePut(value = "APPLICATION_CACHE", key = "#application.applicationId")
     public Map<String, Application> update(Application application) {
         Map<String, Application> result = new HashMap<>();
@@ -111,6 +118,7 @@ public class ApplicationService {
         return new SimpleDateFormat("yyyyMMdd").format(new Date()) + String.format("%04d", random.nextInt(10000));
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     @CachePut(value = "APPLICATION_CACHE", key = "#id")
     public Map<String, String> setStatus(Integer id, Integer status, Language language) {
         Map<String, String> result = new HashMap<>();

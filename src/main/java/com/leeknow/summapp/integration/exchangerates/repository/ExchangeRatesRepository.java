@@ -1,4 +1,4 @@
-package com.leeknow.summapp.exchangerates.repository;
+package com.leeknow.summapp.integration.exchangerates.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

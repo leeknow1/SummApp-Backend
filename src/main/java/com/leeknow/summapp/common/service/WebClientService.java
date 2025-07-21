@@ -13,4 +13,13 @@ public class WebClientService {
                 .bodyToMono(responseType)
                 .block();
     }
+
+    public <T> T post(WebClient webClient, String endpoint, Object body, Class<T> responseType) {
+        return webClient.post()
+                .uri(endpoint)
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(responseType)
+                .block();
+    }
 }

@@ -1,4 +1,4 @@
-package com.leeknow.summapp.exchangerates.entity;
+package com.leeknow.summapp.integration.exchangerates.entity;
 
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;

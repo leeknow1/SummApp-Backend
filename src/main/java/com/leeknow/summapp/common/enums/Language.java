@@ -26,6 +26,6 @@ public enum Language {
             if (value.getCode().equals(code))
                 return value;
         }
-        throw new IllegalArgumentException();
+        return Language.RUSSIAN;
     }
 }

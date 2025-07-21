@@ -1,6 +1,6 @@
 package com.leeknow.summapp.schedule.schedules;
 
-import com.leeknow.summapp.exchangerates.repository.ExchangeRatesRepository;
+import com.leeknow.summapp.integration.exchangerates.repository.ExchangeRatesRepository;
 import com.leeknow.summapp.log.enums.LogType;
 import com.leeknow.summapp.log.service.LogService;
 import com.leeknow.summapp.schedule.dto.ExchangeRateAPIScheduleDTO;
@@ -36,15 +36,15 @@ public class ExchangeRatesAPISchedule extends AbstractScheduledTask {
                     double RUB = EUR / response.getRates().get("RUB"); // тенге в одном рубле
 
                     exchangeRatesRepository.updateExchangeRates(USD, EUR, RUB);
-                    log.save(LogType.SYSTEM.getId(), "Зачада exchange-rates завершена.");
+                    log.save(LogType.SYSTEM.getId(), "Зачада exchange-rates завершена успешно.");
                     return;
                 }
-                log.save(LogType.SYSTEM.getId(), "Зачада exchange-rates не завершена. Ответ не успешный.");
+                log.save(LogType.SYSTEM.getId(), "Зачада exchange-rates не завершена успешно. Ответ не успешный.");
                 return;
             }
-            log.save(LogType.SYSTEM.getId(), "Зачада exchange-rates не завершена. Нет ответа.");
+            log.save(LogType.SYSTEM.getId(), "Зачада exchange-rates не завершена успешно. Нет ответа.");
         } catch (Exception e) {
-            log.save(LogType.CRITICAL.getId(), "Зачада exchange-rates не завершена. Произошла ошибка.\n" + e);
+            log.save(LogType.CRITICAL.getId(), "Зачада exchange-rates не завершена успешно. Произошла ошибка.\n" + e);
         }
     }
 }

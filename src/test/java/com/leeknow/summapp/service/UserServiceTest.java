@@ -14,9 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 class UserServiceTest {
@@ -48,13 +47,11 @@ class UserServiceTest {
         when(userRepository.save(user)).thenReturn(createdUser);
 
         //when
-        Map<String, User> result = userService.save(user);
+        User savedUser = userService.save(user);
 
         //then
-        assertNotNull(result);
-        assertTrue(result.containsKey("user"));
-        assertNotNull(result.get("user"));
-        assertEquals(result.get("user").getUserId(), 1);
+        assertNotNull(savedUser);
+        assertEquals(savedUser.getUserId(), 1);
 
         //verify
         verify(userRepository, times(1)).save(user);
@@ -86,12 +83,9 @@ class UserServiceTest {
         User user = new User();
         user.setEmail("test@gmail.com");
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken("test@gmail.com", null);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(user, null);
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(authentication);
-
-        //mock the calls
-        when(userRepository.findByEmail("test@gmail.com")).thenReturn(user);
 
         //when
         User currentUser = userService.getCurrentUser();
@@ -99,8 +93,5 @@ class UserServiceTest {
         //then
         assertNotNull(currentUser);
         assertEquals(currentUser.getEmail(), user.getEmail());
-
-        //verify
-        verify(userRepository, times(1)).findByEmail("test@gmail.com");
     }
 }

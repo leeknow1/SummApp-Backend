@@ -9,7 +9,6 @@ import com.leeknow.summapp.application.enums.ApplicationType;
 import com.leeknow.summapp.application.repository.ApplicationRepository;
 import com.leeknow.summapp.application.service.ApplicationKafkaService;
 import com.leeknow.summapp.application.service.ApplicationService;
-import com.leeknow.summapp.application.specification.ApplicationSpecification;
 import com.leeknow.summapp.common.dto.DataSearchDTO;
 import com.leeknow.summapp.common.enums.Language;
 import com.leeknow.summapp.event.enums.EventType;
@@ -20,13 +19,11 @@ import com.leeknow.summapp.user.service.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.HashMap;
@@ -67,49 +64,50 @@ class ApplicationServiceTest {
 
     @Test
     void findAll() {
-        //given
+        // given
         ApplicationSearchDTO searchDTO = new ApplicationSearchDTO();
         searchDTO.setSize(10);
-        searchDTO.setPage(0);
+        searchDTO.setPage(1);
         searchDTO.setSort("applicationId");
 
-        Application application = new Application();
-        application.setStatusId(1);
-        application.setTypeId(1);
-        Application application2 = new Application();
-        application2.setStatusId(1);
-        application2.setTypeId(1);
+        Application a1 = new Application();
+        a1.setStatusId(1);
+        a1.setTypeId(1);
+        Application a2 = new Application();
+        a2.setStatusId(1);
+        a2.setTypeId(1);
 
-        Page<Application> applications = new PageImpl<>(List.of(application, application2));
+        Page<Application> applications = new PageImpl<>(List.of(a1, a2), PageRequest.of(0, 10, Sort.by("applicationId")), 2);
 
-        Specification<Application> specification = ApplicationSpecification.getApplicationSpecification(searchDTO);
+        // mock
+        when(applicationRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(applications);
 
-        //mock the calls
-        when(applicationRepository.findAll(specification, PageRequest.of(
-                searchDTO.getPage(),
-                searchDTO.getSize(),
-                Sort.by(searchDTO.getSort())))).thenReturn(applications);
-
-        //when
+        // when
         Map<String, Object> result = applicationService.findAll(searchDTO, Language.RUSSIAN);
 
-        //then
+        // then
         assertNotNull(result);
         assertTrue(result.containsKey("applications"));
         assertTrue(result.containsKey("totalElements"));
         assertTrue(result.containsKey("totalPages"));
+
         assertNotNull(result.get("applications"));
         assertNotNull(result.get("totalElements"));
         assertNotNull(result.get("totalPages"));
-        assertEquals(result.get("totalElements"), 2);
-        assertEquals(result.get("totalPages"), 1);
-        assertInstanceOf(List.class, result.get("applications"));
 
-        //verify
-        verify(applicationRepository, times(1)).findAll(PageRequest.of(
-                searchDTO.getPage(),
-                searchDTO.getSize(),
-                Sort.by(searchDTO.getSort())));
+        assertEquals(2L, result.get("totalElements"));
+        assertEquals(1, result.get("totalPages"));
+        assertInstanceOf(List.class, result.get("applications"));
+        assertEquals(2, ((List<?>) result.get("applications")).size());
+
+        // verify (нельзя создавать новый PageRequest здесь, он другой по ссылке)
+        ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
+        verify(applicationRepository, times(1)).findAll(any(Specification.class), pageableCaptor.capture());
+
+        Pageable captured = pageableCaptor.getValue();
+        assertEquals(0, captured.getPageNumber());                     // page-1
+        assertEquals(10, captured.getPageSize());
+        assertEquals(Sort.by("applicationId"), captured.getSort());
     }
 
     @Test
@@ -117,7 +115,7 @@ class ApplicationServiceTest {
         //given
         DataSearchDTO searchDTO = new DataSearchDTO();
         searchDTO.setSize(10);
-        searchDTO.setPage(0);
+        searchDTO.setPage(1);
         searchDTO.setSort("applicationId");
 
         User user = new User();

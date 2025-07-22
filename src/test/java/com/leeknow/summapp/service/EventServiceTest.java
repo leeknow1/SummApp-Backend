@@ -1,12 +1,12 @@
 package com.leeknow.summapp.service;
 
-import com.leeknow.summapp.common.dto.DataSearchDTO;
 import com.leeknow.summapp.application.entity.Application;
+import com.leeknow.summapp.common.dto.DataSearchDTO;
 import com.leeknow.summapp.event.entity.Event;
-import com.leeknow.summapp.event.service.EventService;
-import com.leeknow.summapp.user.entity.User;
 import com.leeknow.summapp.event.enums.EventType;
 import com.leeknow.summapp.event.repository.EventRepository;
+import com.leeknow.summapp.event.service.EventService;
+import com.leeknow.summapp.user.entity.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;

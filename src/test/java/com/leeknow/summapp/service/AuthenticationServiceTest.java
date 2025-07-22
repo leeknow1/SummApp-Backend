@@ -94,17 +94,13 @@ class AuthenticationServiceTest {
         registrationDTO.setEmail("test@gmail.com");
         registrationDTO.setPassword("12345");
 
-        Map<String, User> createdMap = new HashMap<>();
         User createdUser = new User();
         createdUser.setUserId(1);
         createdUser.setEmail("test@gmail.com");
-        createdMap.put("user", createdUser);
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(createdUser, createdUser, null);
 
         //mock the calls
         when(userService.findByEmail(registrationDTO.getEmail())).thenReturn(null);
-        when(userService.save(any(User.class))).thenReturn(createdMap);
+        when(userService.save(any(User.class))).thenReturn(createdUser);
         when(jwtService.generateToken(any(User.class))).thenReturn("token");
 
         //when

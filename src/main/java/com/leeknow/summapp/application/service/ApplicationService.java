@@ -54,7 +54,7 @@ public class ApplicationService {
 
         Page<Application> applications = applicationRepository.findAll(specification, pageRequest);
 
-        result.put("applications", applications.getContent().stream().map(application -> toResponseDtoApplication(application, language)));
+        result.put("applications", applications.getContent().stream().map(application -> toResponseDtoApplication(application, language)).toList());
         result.put("totalElements", applications.getTotalElements());
         result.put("totalPages", applications.getTotalPages());
         return result;
